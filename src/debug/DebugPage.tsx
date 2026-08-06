@@ -15,7 +15,7 @@ import type { Keputusan } from '../types/keputusan'
 
 function buatDataContoh(): Omit<Keputusan, 'id' | 'createdAt' | 'status'> {
   const targetReview = new Date()
-  targetReview.setDate(targetReview.getDate() + 7)
+  targetReview.setDate(targetReview.getDate() - 1)
 
   return {
     emosi: 'Cemas',
