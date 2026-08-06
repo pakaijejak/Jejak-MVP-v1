@@ -1,0 +1,108 @@
+import Button from '../../components/Button'
+import StepScreen from '../../components/StepScreen'
+import Tooltip from '../../components/Tooltip'
+import { labelStyle, textInputStyle } from '../../styles/formStyles'
+import type { KeputusanDraft } from './types'
+
+const MAX_OPSI = 4
+const MIN_OPSI = 2
+
+interface Step4Props {
+  draft: KeputusanDraft
+  onUpdate: (partial: Partial<KeputusanDraft>) => void
+  onLanjut: () => void
+  onKembali: () => void
+}
+
+function Step4OpsiSkenario({ draft, onUpdate, onLanjut, onKembali }: Step4Props) {
+  const opsi = draft.opsi
+
+  const bisaLanjut =
+    opsi.length >= MIN_OPSI &&
+    opsi.every((o) => o.teks.trim().length > 0 && o.skenarioTerburuk.trim().length > 0)
+
+  function updateOpsi(index: number, partial: Partial<KeputusanDraft['opsi'][number]>) {
+    const next = opsi.map((o, i) => (i === index ? { ...o, ...partial } : o))
+    onUpdate({ opsi: next })
+  }
+
+  function tambahOpsi() {
+    if (opsi.length >= MAX_OPSI) return
+    onUpdate({ opsi: [...opsi, { teks: '', skenarioTerburuk: '' }] })
+  }
+
+  function hapusOpsi(index: number) {
+    if (opsi.length <= MIN_OPSI) return
+    onUpdate({ opsi: opsi.filter((_, i) => i !== index) })
+  }
+
+  return (
+    <StepScreen step={4} totalSteps={6} onKembali={onKembali}>
+      <p style={labelStyle}>Tulis 2–3 opsi yang kamu pertimbangkan:</p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {opsi.map((o, index) => (
+          <div
+            key={index}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{ ...labelStyle, fontSize: '0.95rem' }}>Opsi {index + 1}</p>
+              {opsi.length > MIN_OPSI && (
+                <button
+                  type="button"
+                  onClick={() => hapusOpsi(index)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-ink-muted)',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  Hapus
+                </button>
+              )}
+            </div>
+            <input
+              value={o.teks}
+              onChange={(e) => updateOpsi(index, { teks: e.target.value })}
+              placeholder="Tulis opsi..."
+              style={textInputStyle}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-ink-muted)' }}>
+                Kalau opsi ini gagal, hal terburuk apa yang bisa terjadi? Bisa kamu tangani?
+              </p>
+              {index === 0 && (
+                <Tooltip
+                  istilah="Regret Minimization"
+                  isi="Mikir dari sisi penyesalan, bukan cuma untung-rugi. Kadang pilihan yang 'secara matematis' terbaik bukan yang bikin kamu paling tenang kalau ternyata gagal."
+                />
+              )}
+            </div>
+            <textarea
+              value={o.skenarioTerburuk}
+              onChange={(e) => updateOpsi(index, { skenarioTerburuk: e.target.value })}
+              rows={2}
+              style={{ ...textInputStyle, resize: 'vertical' }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {opsi.length < MAX_OPSI && (
+        <Button variant="secondary" onClick={tambahOpsi}>
+          + Tambah opsi
+        </Button>
+      )}
+
+      <Button variant="primary" onClick={onLanjut} disabled={!bisaLanjut}>
+        Lanjut
+      </Button>
+    </StepScreen>
+  )
+}
+
+export default Step4OpsiSkenario

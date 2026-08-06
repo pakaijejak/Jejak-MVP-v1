@@ -6,6 +6,7 @@ import LihatCekHasil from './screens/LihatCekHasil'
 import Onboarding from './screens/Onboarding'
 import OnboardingContoh from './screens/OnboardingContoh'
 import PlaceholderScreen from './screens/PlaceholderScreen'
+import MulaiKeputusanBaru from './screens/keputusan-baru/MulaiKeputusanBaru'
 
 type Layar =
   | 'onboarding'
@@ -45,9 +46,9 @@ function MainApp() {
       )
     case 'mulai-keputusan':
       return (
-        <PlaceholderScreen
-          pesan="Alur pencatatan keputusan akan dibangun di sesi berikutnya."
-          onKembali={() => setLayar('beranda')}
+        <MulaiKeputusanBaru
+          onSelesai={() => setLayar('beranda')}
+          onBatal={() => setLayar('beranda')}
         />
       )
     case 'riwayat-pola':

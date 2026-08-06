@@ -6,6 +6,7 @@ interface ButtonProps {
   children: ReactNode
   onClick?: () => void
   variant?: ButtonVariant
+  disabled?: boolean
 }
 
 const baseStyle: CSSProperties = {
@@ -37,12 +38,22 @@ const variantStyle: Record<ButtonVariant, CSSProperties> = {
   },
 }
 
-function Button({ children, onClick, variant = 'primary' }: ButtonProps) {
+const disabledStyle: CSSProperties = {
+  opacity: 0.45,
+  cursor: 'not-allowed',
+}
+
+function Button({ children, onClick, variant = 'primary', disabled = false }: ButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
-      style={{ ...baseStyle, ...variantStyle[variant] }}
+      disabled={disabled}
+      style={{
+        ...baseStyle,
+        ...variantStyle[variant],
+        ...(disabled ? disabledStyle : {}),
+      }}
     >
       {children}
     </button>
