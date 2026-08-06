@@ -6,7 +6,7 @@ import CekHasilFlow from './screens/cek-hasil/CekHasilFlow'
 import LihatCekHasil from './screens/LihatCekHasil'
 import Onboarding from './screens/Onboarding'
 import OnboardingContoh from './screens/OnboardingContoh'
-import PlaceholderScreen from './screens/PlaceholderScreen'
+import RiwayatPola from './screens/riwayat-pola/RiwayatPola'
 import MulaiKeputusanBaru from './screens/keputusan-baru/MulaiKeputusanBaru'
 
 type Layar =
@@ -18,15 +18,24 @@ type Layar =
   | 'lihat-cek-hasil'
   | 'cek-hasil-detail'
 
+type AsalCekHasil = 'lihat-cek-hasil' | 'riwayat-pola'
+
 function MainApp() {
   const [layar, setLayar] = useState<Layar>(() =>
     ambilOnboardingSelesai() ? 'beranda' : 'onboarding',
   )
   const [idKeputusanDipilih, setIdKeputusanDipilih] = useState<string | null>(null)
+  const [asalCekHasil, setAsalCekHasil] = useState<AsalCekHasil>('lihat-cek-hasil')
 
   function selesaikanOnboarding() {
     setOnboardingSelesai(true)
     setLayar('beranda')
+  }
+
+  function pilihKeputusanUntukDicek(id: string, asal: AsalCekHasil) {
+    setIdKeputusanDipilih(id)
+    setAsalCekHasil(asal)
+    setLayar('cek-hasil-detail')
   }
 
   switch (layar) {
@@ -56,19 +65,16 @@ function MainApp() {
       )
     case 'riwayat-pola':
       return (
-        <PlaceholderScreen
-          pesan="Riwayat & Pola akan dibangun di sesi berikutnya."
+        <RiwayatPola
           onKembali={() => setLayar('beranda')}
+          onPilihPending={(id) => pilihKeputusanUntukDicek(id, 'riwayat-pola')}
         />
       )
     case 'lihat-cek-hasil':
       return (
         <LihatCekHasil
           onKembali={() => setLayar('beranda')}
-          onPilih={(id) => {
-            setIdKeputusanDipilih(id)
-            setLayar('cek-hasil-detail')
-          }}
+          onPilih={(id) => pilihKeputusanUntukDicek(id, 'lihat-cek-hasil')}
         />
       )
     case 'cek-hasil-detail':
@@ -77,7 +83,7 @@ function MainApp() {
         <CekHasilFlow
           keputusanId={idKeputusanDipilih}
           onSelesai={() => setLayar('beranda')}
-          onBatal={() => setLayar('lihat-cek-hasil')}
+          onBatal={() => setLayar(asalCekHasil)}
         />
       )
   }

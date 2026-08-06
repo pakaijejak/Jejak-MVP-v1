@@ -29,6 +29,11 @@ export function tambahKeputusan(data: KeputusanBaru): Keputusan {
   return keputusan;
 }
 
+export function tambahKeputusanBanyak(daftar: Keputusan[]): void {
+  const semua = ambilSemuaKeputusan();
+  simpanSemuaKeputusan([...semua, ...daftar]);
+}
+
 export function ambilKeputusanById(id: string): Keputusan | undefined {
   return ambilSemuaKeputusan().find((k) => k.id === id);
 }
