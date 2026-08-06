@@ -7,18 +7,18 @@ import type { KeputusanDraft } from './types'
 
 const KATEGORI_LIST: Keputusan['kategori'][] = ['Karier', 'Uang', 'Relasi', 'Kesehatan', 'Lainnya']
 
-interface Step2Props {
+interface Step1Props {
   draft: KeputusanDraft
   onUpdate: (partial: Partial<KeputusanDraft>) => void
   onLanjut: () => void
   onKembali: () => void
 }
 
-function Step2RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
+function Step1RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali }: Step1Props) {
   const bisaLanjut = draft.masalah.trim().length > 0 && Boolean(draft.kategori)
 
   return (
-    <StepScreen step={2} totalSteps={6} onKembali={onKembali}>
+    <StepScreen step={1} totalSteps={6} onKembali={onKembali}>
       <div>
         <p style={labelStyle}>Keputusan apa yang lagi kamu hadapi?</p>
         <textarea
@@ -51,4 +51,4 @@ function Step2RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali }: Step2Pro
   )
 }
 
-export default Step2RumuskanMasalah
+export default Step1RumuskanMasalah

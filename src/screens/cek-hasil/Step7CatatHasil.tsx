@@ -1,35 +1,49 @@
+import { useState } from 'react'
 import Button from '../../components/Button'
-import Chip from '../../components/Chip'
 import StepScreen from '../../components/StepScreen'
 import { labelStyle, textInputStyle } from '../../styles/formStyles'
-import type { Keputusan } from '../../types/keputusan'
-
-const HASIL_LIST: NonNullable<Keputusan['hasilAktual']>[] = ['Berhasil', 'Campuran', 'Tidak berhasil']
 
 interface Step7Props {
-  hasilAktual?: Keputusan['hasilAktual']
+  hasilPersen?: number
   catatanHasil: string
-  onUpdate: (partial: { hasilAktual?: Keputusan['hasilAktual']; catatanHasil?: string }) => void
+  onUpdate: (partial: { hasilPersen?: number; catatanHasil?: string }) => void
   onLanjut: () => void
   onKembali: () => void
 }
 
-function Step7CatatHasil({ hasilAktual, catatanHasil, onUpdate, onLanjut, onKembali }: Step7Props) {
-  const bisaLanjut = Boolean(hasilAktual)
+function Step7CatatHasil({ hasilPersen, catatanHasil, onUpdate, onLanjut, onKembali }: Step7Props) {
+  const [tersentuh, setTersentuh] = useState(hasilPersen !== undefined)
+  const nilai = hasilPersen ?? 50
+  const bisaLanjut = tersentuh
+
+  function handleSlider(value: number) {
+    setTersentuh(true)
+    onUpdate({ hasilPersen: value })
+  }
 
   return (
     <StepScreen step={7} totalSteps={9} onKembali={onKembali}>
       <div>
-        <p style={labelStyle}>Gimana hasilnya?</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
-          {HASIL_LIST.map((hasil) => (
-            <Chip
-              key={hasil}
-              label={hasil}
-              selected={hasilAktual === hasil}
-              onClick={() => onUpdate({ hasilAktual: hasil })}
-            />
-          ))}
+        <p style={labelStyle}>Menurutmu, hasilnya gimana?</p>
+        <p style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 700, margin: '16px 0 0' }}>{nilai}%</p>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={nilai}
+          onChange={(e) => handleSlider(Number(e.target.value))}
+          style={{ width: '100%', marginTop: 8, accentColor: 'var(--color-accent)' }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: '0.8rem',
+            color: 'var(--color-ink-muted)',
+          }}
+        >
+          <span>Meleset dari harapan</span>
+          <span>Sesuai harapan</span>
         </div>
       </div>
 

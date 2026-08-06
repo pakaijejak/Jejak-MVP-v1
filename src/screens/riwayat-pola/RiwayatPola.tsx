@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import Chip from '../../components/Chip'
 import Screen from '../../components/Screen'
-import { ambilSemuaKeputusan } from '../../lib/storage'
+import { ambilSemuaKeputusan, ambilTampilkanGrafikPola, setTampilkanGrafikPola } from '../../lib/storage'
 import type { Keputusan } from '../../types/keputusan'
+import DetailKeputusan from './DetailKeputusan'
 import GrafikKalibrasi from './GrafikKalibrasi'
 import KartuRiwayat from './KartuRiwayat'
 
@@ -17,11 +18,26 @@ interface RiwayatPolaProps {
 function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
   const [semua] = useState(() => ambilSemuaKeputusan())
   const [filter, setFilter] = useState<FilterKategori>('Semua')
+  const [tampilkanGrafik, setTampilkanGrafikState] = useState(() => ambilTampilkanGrafikPola())
+  const [idDetail, setIdDetail] = useState<string | null>(null)
 
   const terfilter = useMemo(() => {
     const hasil = filter === 'Semua' ? semua : semua.filter((k) => k.kategori === filter)
     return [...hasil].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [semua, filter])
+
+  function toggleGrafik() {
+    const next = !tampilkanGrafik
+    setTampilkanGrafikPola(next)
+    setTampilkanGrafikState(next)
+  }
+
+  if (idDetail) {
+    const detail = semua.find((k) => k.id === idDetail)
+    if (detail) {
+      return <DetailKeputusan keputusan={detail} onKembali={() => setIdDetail(null)} />
+    }
+  }
 
   return (
     <Screen>
@@ -46,6 +62,10 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
         <h1 style={{ margin: 0, fontSize: '1.3rem' }}>Riwayat &amp; Pola</h1>
       </div>
 
+      <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
+        Riwayat ini bukan rapor buat menilai kamu. Ini buat bantu kamu liat pola cara mikirmu dari waktu ke waktu.
+      </p>
+
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
         <Chip label="Semua" selected={filter === 'Semua'} onClick={() => setFilter('Semua')} />
         {KATEGORI_LIST.map((kategori) => (
@@ -58,7 +78,27 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
         ))}
       </div>
 
-      <GrafikKalibrasi data={terfilter} />
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            type="button"
+            onClick={toggleGrafik}
+            aria-label={tampilkanGrafik ? 'Sembunyikan grafik' : 'Tampilkan grafik'}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--color-ink-muted)',
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              textDecoration: 'underline',
+            }}
+          >
+            {tampilkanGrafik ? '👁 Sembunyikan grafik' : '👁 Tampilkan grafik'}
+          </button>
+        </div>
+        {tampilkanGrafik && <GrafikKalibrasi data={terfilter} />}
+      </div>
 
       <div>
         <p style={{ margin: '0 0 12px', fontWeight: 600 }}>Daftar keputusan</p>
@@ -70,7 +110,7 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
               <KartuRiwayat
                 key={k.id}
                 keputusan={k}
-                onTap={k.status === 'menunggu_direview' ? () => onPilihPending(k.id) : undefined}
+                onTap={k.status === 'menunggu_direview' ? () => onPilihPending(k.id) : () => setIdDetail(k.id)}
               />
             ))}
           </div>

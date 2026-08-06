@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { tambahKeputusan } from '../../lib/storage'
-import Step1JedaEmosi from './Step1JedaEmosi'
-import Step2RumuskanMasalah from './Step2RumuskanMasalah'
+import Step1RumuskanMasalah from './Step1RumuskanMasalah'
+import Step2JedaEmosi from './Step2JedaEmosi'
 import Step3CekFakta from './Step3CekFakta'
 import Step4OpsiSkenario from './Step4OpsiSkenario'
 import Step5Putuskan from './Step5Putuskan'
@@ -31,13 +31,15 @@ function MulaiKeputusanBaru({ onSelesai, onBatal }: MulaiKeputusanBaruProps) {
 
   function simpanKeputusan(tanggalTargetReview: string) {
     tambahKeputusan({
-      emosi: draft.emosi as NonNullable<KeputusanDraft['emosi']>,
-      intensitasEmosi: draft.intensitasEmosi as NonNullable<KeputusanDraft['intensitasEmosi']>,
       masalah: draft.masalah,
       kategori: draft.kategori as NonNullable<KeputusanDraft['kategori']>,
+      emosi: draft.emosi as NonNullable<KeputusanDraft['emosi']>,
+      intensitasEmosi: draft.intensitasEmosi as NonNullable<KeputusanDraft['intensitasEmosi']>,
       infoYangDimiliki: draft.infoYangDimiliki,
+      asumsiYangDianggapPasti: draft.asumsiYangDianggapPasti?.trim() || undefined,
       sudahCekPandanganBerbeda: draft.sudahCekPandanganBerbeda as boolean,
       opsi: draft.opsi,
+      perspektifOrangLain: draft.perspektifOrangLain?.trim() || undefined,
       opsiTerpilihIndex: draft.opsiTerpilihIndex as number,
       keyakinanAwal: draft.keyakinanAwal as number,
       tanggalTargetReview,
@@ -47,7 +49,7 @@ function MulaiKeputusanBaru({ onSelesai, onBatal }: MulaiKeputusanBaruProps) {
   switch (currentStep) {
     case 1:
       return (
-        <Step1JedaEmosi
+        <Step1RumuskanMasalah
           draft={draft}
           onUpdate={updateDraft}
           onLanjut={() => setCurrentStep(2)}
@@ -56,7 +58,7 @@ function MulaiKeputusanBaru({ onSelesai, onBatal }: MulaiKeputusanBaruProps) {
       )
     case 2:
       return (
-        <Step2RumuskanMasalah
+        <Step2JedaEmosi
           draft={draft}
           onUpdate={updateDraft}
           onLanjut={() => setCurrentStep(3)}

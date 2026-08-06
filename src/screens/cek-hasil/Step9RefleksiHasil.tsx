@@ -2,37 +2,45 @@ import { useState } from 'react'
 import Button from '../../components/Button'
 import StepScreen from '../../components/StepScreen'
 import { labelStyle, textInputStyle } from '../../styles/formStyles'
-import type { Keputusan } from '../../types/keputusan'
 
 export interface RefleksiJawaban {
   apaYangBikinBegini: string
   prosesYangMembantuAtauKurang: string
   perasaanSekarang: string
   halYangBedaKedepan: string
+  metaRefleksi?: string
 }
 
 interface Step9Props {
-  hasilAktual: NonNullable<Keputusan['hasilAktual']>
   onSelesai: (refleksi: RefleksiJawaban) => void
   onKembali: () => void
 }
 
-function Step9RefleksiHasil({ hasilAktual, onSelesai, onKembali }: Step9Props) {
-  const [jawaban, setJawaban] = useState<RefleksiJawaban>({
+function Step9RefleksiHasil({ onSelesai, onKembali }: Step9Props) {
+  const [jawaban, setJawaban] = useState({
     apaYangBikinBegini: '',
     prosesYangMembantuAtauKurang: '',
     perasaanSekarang: '',
     halYangBedaKedepan: '',
   })
+  const [metaRefleksi, setMetaRefleksi] = useState('')
+  const [terbukaMeta, setTerbukaMeta] = useState(false)
 
-  function update(partial: Partial<RefleksiJawaban>) {
+  function update(partial: Partial<typeof jawaban>) {
     setJawaban((prev) => ({ ...prev, ...partial }))
+  }
+
+  function handleSelesai() {
+    onSelesai({
+      ...jawaban,
+      metaRefleksi: metaRefleksi.trim() || undefined,
+    })
   }
 
   return (
     <StepScreen step={9} totalSteps={9} onKembali={onKembali}>
       <div>
-        <p style={labelStyle}>Apa yang bikin ini {hasilAktual.toLowerCase()}?</p>
+        <p style={labelStyle}>Apa yang bikin hasilnya seperti ini?</p>
         <textarea
           value={jawaban.apaYangBikinBegini}
           onChange={(e) => update({ apaYangBikinBegini: e.target.value })}
@@ -73,7 +81,41 @@ function Step9RefleksiHasil({ hasilAktual, onSelesai, onKembali }: Step9Props) {
         />
       </div>
 
-      <Button variant="primary" onClick={() => onSelesai(jawaban)}>
+      <div style={{ border: '1px solid var(--color-ink-muted)', borderRadius: 12, padding: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <p style={{ margin: 0, fontWeight: 600 }}>Mau gali lebih dalam? (opsional)</p>
+          <button
+            type="button"
+            onClick={() => setTerbukaMeta((v) => !v)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--color-accent)',
+              fontWeight: 600,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {terbukaMeta ? 'Tutup' : 'Tap untuk buka'}
+          </button>
+        </div>
+        {terbukaMeta && (
+          <div style={{ marginTop: 12 }}>
+            <p style={{ margin: 0, fontSize: '0.95rem' }}>
+              Dari semua pertanyaan tadi, mana yang paling susah kamu jawab? Kenapa?
+            </p>
+            <textarea
+              value={metaRefleksi}
+              onChange={(e) => setMetaRefleksi(e.target.value)}
+              rows={3}
+              style={{ ...textInputStyle, resize: 'vertical', marginTop: 8 }}
+            />
+          </div>
+        )}
+      </div>
+
+      <Button variant="primary" onClick={handleSelesai}>
         Lanjut
       </Button>
     </StepScreen>

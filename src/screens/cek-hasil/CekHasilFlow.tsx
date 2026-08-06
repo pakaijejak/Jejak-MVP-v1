@@ -17,7 +17,7 @@ interface CekHasilFlowProps {
 }
 
 interface DraftHasil {
-  hasilAktual?: Keputusan['hasilAktual']
+  hasilPersen?: number
   catatanHasil: string
 }
 
@@ -37,9 +37,9 @@ function CekHasilFlow({ keputusanId, onSelesai, onBatal }: CekHasilFlowProps) {
   }
 
   function simpanRefleksi(refleksi: RefleksiJawaban) {
-    const skorKalibrasi = hitungSkorKalibrasi(keputusanAwal!.keyakinanAwal, draft.hasilAktual!)
+    const skorKalibrasi = hitungSkorKalibrasi(keputusanAwal!.keyakinanAwal, draft.hasilPersen!)
     const updated = updateKeputusan(keputusanId, {
-      hasilAktual: draft.hasilAktual,
+      hasilPersen: draft.hasilPersen,
       catatanHasil: draft.catatanHasil,
       skorKalibrasi,
       refleksi,
@@ -54,7 +54,7 @@ function CekHasilFlow({ keputusanId, onSelesai, onBatal }: CekHasilFlowProps) {
     case 'step7':
       return (
         <Step7CatatHasil
-          hasilAktual={draft.hasilAktual}
+          hasilPersen={draft.hasilPersen}
           catatanHasil={draft.catatanHasil}
           onUpdate={updateDraft}
           onLanjut={() => setTahap('step8')}
@@ -65,19 +65,13 @@ function CekHasilFlow({ keputusanId, onSelesai, onBatal }: CekHasilFlowProps) {
       return (
         <Step8SkorKalibrasi
           keputusan={keputusanAwal}
-          hasilAktual={draft.hasilAktual as NonNullable<Keputusan['hasilAktual']>}
+          hasilPersen={draft.hasilPersen as number}
           onLanjut={() => setTahap('step9')}
           onKembali={() => setTahap('step7')}
         />
       )
     case 'step9':
-      return (
-        <Step9RefleksiHasil
-          hasilAktual={draft.hasilAktual as NonNullable<Keputusan['hasilAktual']>}
-          onSelesai={simpanRefleksi}
-          onKembali={() => setTahap('step8')}
-        />
-      )
+      return <Step9RefleksiHasil onSelesai={simpanRefleksi} onKembali={() => setTahap('step8')} />
     case 'ringkasan':
       return (
         <KartuRingkasan

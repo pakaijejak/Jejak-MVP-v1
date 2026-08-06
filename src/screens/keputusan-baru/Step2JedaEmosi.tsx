@@ -10,20 +10,20 @@ const EMOSI_LIST: Keputusan['emosi'][] = ['Cemas', 'Bingung', 'Marah', 'Sedih', 
 const INTENSITAS_LIST: Keputusan['intensitasEmosi'][] = ['Ringan', 'Sedang', 'Kuat']
 const EMOSI_NEGATIF: Keputusan['emosi'][] = ['Cemas', 'Bingung', 'Marah', 'Sedih']
 
-interface Step1Props {
+interface Step2Props {
   draft: KeputusanDraft
   onUpdate: (partial: Partial<KeputusanDraft>) => void
   onLanjut: () => void
   onKembali: () => void
 }
 
-function Step1JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step1Props) {
+function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
   const bisaLanjut = Boolean(draft.emosi && draft.intensitasEmosi)
   const emosiKuatNegatif =
     draft.intensitasEmosi === 'Kuat' && draft.emosi !== undefined && EMOSI_NEGATIF.includes(draft.emosi)
 
   return (
-    <StepScreen step={1} totalSteps={6} onKembali={onKembali}>
+    <StepScreen step={2} totalSteps={6} onKembali={onKembali}>
       <p style={labelStyle}>Lagi ngerasa apa soal keputusan ini?</p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
@@ -67,4 +67,4 @@ function Step1JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step1Props) {
   )
 }
 
-export default Step1JedaEmosi
+export default Step2JedaEmosi

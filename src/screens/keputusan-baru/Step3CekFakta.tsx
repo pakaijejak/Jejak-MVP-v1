@@ -41,6 +41,24 @@ function Step3CekFakta({ draft, onUpdate, onLanjut, onKembali }: Step3Props) {
       </div>
 
       <div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <p style={{ ...labelStyle, fontSize: '1rem' }}>
+            Keyakinan apa yang kamu anggap pasti benar soal ini, padahal belum tentu? (opsional)
+          </p>
+          <Tooltip
+            istilah="Asumsi Tersembunyi"
+            isi="Otak kita sering nganggep sesuatu pasti benar tanpa sadar itu cuma asumsi. Nyadarin ini bikin kamu lihat opsi yang tadinya nggak kepikiran."
+          />
+        </div>
+        <textarea
+          value={draft.asumsiYangDianggapPasti ?? ''}
+          onChange={(e) => onUpdate({ asumsiYangDianggapPasti: e.target.value })}
+          rows={3}
+          style={{ ...textInputStyle, resize: 'vertical', marginTop: 8 }}
+        />
+      </div>
+
+      <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <p style={{ ...labelStyle, fontSize: '1rem' }}>
             Sudah cari pandangan yang BERTENTANGAN dengan pendapatmu?

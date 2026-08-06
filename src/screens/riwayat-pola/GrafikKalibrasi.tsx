@@ -15,12 +15,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartToo
 ChartJS.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif"
 ChartJS.defaults.color = '#5C6B74'
 
-const ANGKA_HASIL: Record<NonNullable<Keputusan['hasilAktual']>, number> = {
-  Berhasil: 100,
-  Campuran: 50,
-  'Tidak berhasil': 0,
-}
-
 function formatTanggalPendek(iso: string): string {
   return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
 }
@@ -33,7 +27,7 @@ function GrafikKalibrasi({ data }: GrafikKalibrasiProps) {
   const sudahDireview = useMemo(
     () =>
       data
-        .filter((k) => k.status === 'sudah_direview' && k.hasilAktual !== undefined)
+        .filter((k) => k.status === 'sudah_direview' && k.hasilPersen !== undefined)
         .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()),
     [data],
   )
@@ -58,7 +52,7 @@ function GrafikKalibrasi({ data }: GrafikKalibrasiProps) {
       },
       {
         label: 'Hasil',
-        data: sudahDireview.map((k) => ANGKA_HASIL[k.hasilAktual as NonNullable<Keputusan['hasilAktual']>]),
+        data: sudahDireview.map((k) => k.hasilPersen as number),
         borderColor: '#2B3A42',
         backgroundColor: '#2B3A42',
         tension: 0.3,

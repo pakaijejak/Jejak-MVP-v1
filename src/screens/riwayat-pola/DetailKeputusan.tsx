@@ -1,0 +1,147 @@
+import type { CSSProperties } from 'react'
+import Button from '../../components/Button'
+import Screen from '../../components/Screen'
+import { KALIMAT_GAP_KALIBRASI, KALIMAT_REASSURANCE_KALIBRASI } from '../../lib/kalibrasi'
+import type { Keputusan } from '../../types/keputusan'
+
+const sectionTitleStyle: CSSProperties = {
+  margin: '0 0 8px',
+  fontWeight: 700,
+  fontSize: '0.8rem',
+  color: 'var(--color-ink-muted)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.03em',
+}
+
+const fieldLabelStyle: CSSProperties = {
+  margin: '0 0 2px',
+  fontSize: '0.85rem',
+  color: 'var(--color-ink-muted)',
+}
+
+const fieldValueStyle: CSSProperties = {
+  margin: '0 0 12px',
+  fontSize: '1rem',
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p style={fieldLabelStyle}>{label}</p>
+      <p style={fieldValueStyle}>{value}</p>
+    </div>
+  )
+}
+
+interface DetailKeputusanProps {
+  keputusan: Keputusan
+  onKembali: () => void
+}
+
+function DetailKeputusan({ keputusan, onKembali }: DetailKeputusanProps) {
+  const opsiTerpilih = keputusan.opsi[keputusan.opsiTerpilihIndex]?.teks ?? '-'
+  const skorKalibrasi = keputusan.skorKalibrasi
+  const kalimatGap = skorKalibrasi ? KALIMAT_GAP_KALIBRASI[skorKalibrasi] : undefined
+  const kalimatReassurance = skorKalibrasi ? KALIMAT_REASSURANCE_KALIBRASI[skorKalibrasi] : undefined
+
+  return (
+    <Screen>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button
+          type="button"
+          onClick={onKembali}
+          aria-label="Kembali"
+          style={{
+            background: 'none',
+            border: 'none',
+            fontSize: '1.5rem',
+            color: 'var(--color-ink)',
+            cursor: 'pointer',
+            padding: 4,
+            lineHeight: 1,
+            fontFamily: 'inherit',
+          }}
+        >
+          ←
+        </button>
+        <h1 style={{ margin: 0, fontSize: '1.2rem' }}>Detail Keputusan</h1>
+      </div>
+
+      <section>
+        <p style={sectionTitleStyle}>Awal</p>
+        <Field label="Masalah" value={keputusan.masalah} />
+        <Field label="Kategori" value={keputusan.kategori} />
+        <Field label="Emosi" value={`${keputusan.emosi} (${keputusan.intensitasEmosi})`} />
+      </section>
+
+      <section>
+        <p style={sectionTitleStyle}>Opsi &amp; Pertimbangan</p>
+        <Field label="Info yang dimiliki" value={keputusan.infoYangDimiliki} />
+        {keputusan.asumsiYangDianggapPasti && (
+          <Field label="Asumsi yang dianggap pasti" value={keputusan.asumsiYangDianggapPasti} />
+        )}
+        <Field
+          label="Sudah cek pandangan berbeda?"
+          value={keputusan.sudahCekPandanganBerbeda ? 'Sudah' : 'Belum'}
+        />
+        <p style={fieldLabelStyle}>Opsi yang dipertimbangkan</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+          {keputusan.opsi.map((o, i) => (
+            <div key={i} style={{ border: '1px solid var(--color-ink-muted)', borderRadius: 8, padding: 10 }}>
+              <p style={{ margin: 0, fontWeight: 600 }}>{o.teks}</p>
+              <p style={{ margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--color-ink-muted)' }}>
+                Skenario terburuk: {o.skenarioTerburuk}
+              </p>
+            </div>
+          ))}
+        </div>
+        {keputusan.perspektifOrangLain && (
+          <Field label="Perspektif orang lain" value={keputusan.perspektifOrangLain} />
+        )}
+      </section>
+
+      <section>
+        <p style={sectionTitleStyle}>Keputusan</p>
+        <Field label="Opsi yang dipilih" value={opsiTerpilih} />
+        <Field label="Keyakinan awal" value={`${keputusan.keyakinanAwal}%`} />
+      </section>
+
+      <section>
+        <p style={sectionTitleStyle}>Hasil &amp; Refleksi</p>
+        <Field label="Hasil" value={`${keputusan.hasilPersen}% sesuai harapan`} />
+        {kalimatGap && (
+          <div style={{ marginBottom: 12 }}>
+            <p style={{ margin: 0 }}>{kalimatGap}</p>
+            {kalimatReassurance && (
+              <p style={{ margin: '4px 0 0', color: 'var(--color-ink-muted)' }}>{kalimatReassurance}</p>
+            )}
+          </div>
+        )}
+        {keputusan.catatanHasil && <Field label="Catatan hasil" value={keputusan.catatanHasil} />}
+        {keputusan.refleksi && (
+          <>
+            <Field
+              label="Apa yang bikin hasilnya seperti ini?"
+              value={keputusan.refleksi.apaYangBikinBegini || '-'}
+            />
+            <Field
+              label="Bagian yang menolong / kurang"
+              value={keputusan.refleksi.prosesYangMembantuAtauKurang || '-'}
+            />
+            <Field label="Perasaan sekarang" value={keputusan.refleksi.perasaanSekarang || '-'} />
+            <Field label="Hal yang mau dilakukan beda" value={keputusan.refleksi.halYangBedaKedepan || '-'} />
+            {keputusan.refleksi.metaRefleksi && (
+              <Field label="Pertanyaan paling susah dijawab" value={keputusan.refleksi.metaRefleksi} />
+            )}
+          </>
+        )}
+      </section>
+
+      <Button variant="secondary" onClick={onKembali}>
+        Kembali
+      </Button>
+    </Screen>
+  )
+}
+
+export default DetailKeputusan

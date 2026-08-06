@@ -3,6 +3,7 @@ import type { Keputusan, OptInStatus } from '../types/keputusan';
 const KEPUTUSAN_KEY = 'jejak:keputusan';
 const ONBOARDING_SELESAI_KEY = 'jejak:onboardingSelesai';
 const OPT_IN_STATUS_KEY = 'jejak:optInStatus';
+const TAMPILKAN_GRAFIK_POLA_KEY = 'jejak:tampilkanGrafikPola';
 
 type KeputusanBaru = Omit<Keputusan, 'id' | 'createdAt' | 'status'>;
 
@@ -89,8 +90,19 @@ export function setOptInStatus(status: OptInStatus): void {
   localStorage.setItem(OPT_IN_STATUS_KEY, status);
 }
 
+export function ambilTampilkanGrafikPola(): boolean {
+  const raw = localStorage.getItem(TAMPILKAN_GRAFIK_POLA_KEY);
+  if (raw === null) return true;
+  return raw === 'true';
+}
+
+export function setTampilkanGrafikPola(tampilkan: boolean): void {
+  localStorage.setItem(TAMPILKAN_GRAFIK_POLA_KEY, String(tampilkan));
+}
+
 export function hapusSemuaData(): void {
   localStorage.removeItem(KEPUTUSAN_KEY);
   localStorage.removeItem(ONBOARDING_SELESAI_KEY);
   localStorage.removeItem(OPT_IN_STATUS_KEY);
+  localStorage.removeItem(TAMPILKAN_GRAFIK_POLA_KEY);
 }

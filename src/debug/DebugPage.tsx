@@ -20,16 +20,18 @@ function buatDataContoh(): Omit<Keputusan, 'id' | 'createdAt' | 'status'> {
   targetReview.setDate(targetReview.getDate() - 1)
 
   return {
-    emosi: 'Cemas',
-    intensitasEmosi: 'Sedang',
     masalah: 'Contoh masalah dummy dibuat pada ' + new Date().toLocaleTimeString(),
     kategori: 'Karier',
+    emosi: 'Cemas',
+    intensitasEmosi: 'Sedang',
     infoYangDimiliki: 'Info dummy yang sudah dikumpulkan.',
+    asumsiYangDianggapPasti: 'Saya anggap pasti atasan akan langsung setuju.',
     sudahCekPandanganBerbeda: true,
     opsi: [
       { teks: 'Opsi A (dummy)', skenarioTerburuk: 'Skenario terburuk A' },
       { teks: 'Opsi B (dummy)', skenarioTerburuk: 'Skenario terburuk B' },
     ],
+    perspektifOrangLain: 'Teman bilang saya sudah cukup siap.',
     opsiTerpilihIndex: 0,
     keyakinanAwal: 70,
     tanggalTargetReview: targetReview.toISOString(),
@@ -45,22 +47,56 @@ function hariLalu(n: number): string {
 interface SpekVariatif {
   kategori: Keputusan['kategori']
   keyakinanAwal: number
-  hasilAktual?: Keputusan['hasilAktual']
+  hasilPersen?: number
   createdAtHariLalu: number
   reviewedAtHariLalu?: number
+  asumsiYangDianggapPasti?: string
+  perspektifOrangLain?: string
+  metaRefleksi?: string
 }
 
 // Sebar kategori (Karier sengaja diberi 5 entri supaya insight pola di Step 8 ikut ketes),
 // sebagian besar sudah_direview dengan variasi kalibrasi, sisanya menunggu_direview,
-// tanggal disebar di beberapa hari terakhir supaya grafik punya bentuk.
+// tanggal disebar di beberapa hari terakhir supaya grafik punya bentuk. Beberapa entri
+// diisi field baru (asumsiYangDianggapPasti, perspektifOrangLain, metaRefleksi) supaya
+// layar detail di Riwayat & Pola ikut ketes datanya lengkap.
 const SPEK_VARIATIF: SpekVariatif[] = [
-  { kategori: 'Karier', keyakinanAwal: 88, hasilAktual: 'Berhasil', createdAtHariLalu: 20, reviewedAtHariLalu: 14 },
-  { kategori: 'Karier', keyakinanAwal: 90, hasilAktual: 'Tidak berhasil', createdAtHariLalu: 18, reviewedAtHariLalu: 12 },
-  { kategori: 'Karier', keyakinanAwal: 25, hasilAktual: 'Berhasil', createdAtHariLalu: 16, reviewedAtHariLalu: 10 },
-  { kategori: 'Karier', keyakinanAwal: 60, hasilAktual: 'Campuran', createdAtHariLalu: 14, reviewedAtHariLalu: 8 },
-  { kategori: 'Karier', keyakinanAwal: 80, hasilAktual: 'Tidak berhasil', createdAtHariLalu: 12, reviewedAtHariLalu: 6 },
-  { kategori: 'Uang', keyakinanAwal: 70, hasilAktual: 'Berhasil', createdAtHariLalu: 10, reviewedAtHariLalu: 5 },
-  { kategori: 'Relasi', keyakinanAwal: 50, hasilAktual: 'Campuran', createdAtHariLalu: 9, reviewedAtHariLalu: 4 },
+  {
+    kategori: 'Karier',
+    keyakinanAwal: 88,
+    hasilPersen: 92,
+    createdAtHariLalu: 20,
+    reviewedAtHariLalu: 14,
+    asumsiYangDianggapPasti: 'Saya kira atasan pasti akan menolak.',
+    perspektifOrangLain: 'Teman bilang saya terlalu takut ambil risiko.',
+  },
+  { kategori: 'Karier', keyakinanAwal: 90, hasilPersen: 10, createdAtHariLalu: 18, reviewedAtHariLalu: 12 },
+  {
+    kategori: 'Karier',
+    keyakinanAwal: 25,
+    hasilPersen: 85,
+    createdAtHariLalu: 16,
+    reviewedAtHariLalu: 10,
+    metaRefleksi: 'Paling susah jawab soal perasaan sekarang.',
+  },
+  { kategori: 'Karier', keyakinanAwal: 60, hasilPersen: 55, createdAtHariLalu: 14, reviewedAtHariLalu: 8 },
+  { kategori: 'Karier', keyakinanAwal: 80, hasilPersen: 15, createdAtHariLalu: 12, reviewedAtHariLalu: 6 },
+  {
+    kategori: 'Uang',
+    keyakinanAwal: 70,
+    hasilPersen: 75,
+    createdAtHariLalu: 10,
+    reviewedAtHariLalu: 5,
+    asumsiYangDianggapPasti: 'Saya pikir harga pasti naik terus.',
+  },
+  {
+    kategori: 'Relasi',
+    keyakinanAwal: 50,
+    hasilPersen: 45,
+    createdAtHariLalu: 9,
+    reviewedAtHariLalu: 4,
+    perspektifOrangLain: 'Sahabat bilang wajar kalau ragu.',
+  },
   { kategori: 'Uang', keyakinanAwal: 65, createdAtHariLalu: 3 },
   { kategori: 'Relasi', keyakinanAwal: 55, createdAtHariLalu: 2 },
   { kategori: 'Kesehatan', keyakinanAwal: 40, createdAtHariLalu: 1 },
@@ -68,41 +104,44 @@ const SPEK_VARIATIF: SpekVariatif[] = [
 
 function buatBanyakDataContohVariatif(): Keputusan[] {
   return SPEK_VARIATIF.map((spek, index) => {
-    const pending = spek.hasilAktual === undefined
+    const pending = spek.hasilPersen === undefined
 
     const dasar: Keputusan = {
       id: crypto.randomUUID(),
       createdAt: hariLalu(spek.createdAtHariLalu),
-      emosi: 'Netral',
-      intensitasEmosi: 'Sedang',
       masalah: `Contoh variatif ${spek.kategori} #${index + 1}`,
       kategori: spek.kategori,
+      emosi: 'Netral',
+      intensitasEmosi: 'Sedang',
       infoYangDimiliki: 'Info dummy variatif.',
+      asumsiYangDianggapPasti: spek.asumsiYangDianggapPasti,
       sudahCekPandanganBerbeda: true,
       opsi: [
         { teks: `Opsi A variatif ${index + 1}`, skenarioTerburuk: 'Skenario buruk A' },
         { teks: `Opsi B variatif ${index + 1}`, skenarioTerburuk: 'Skenario buruk B' },
       ],
+      perspektifOrangLain: spek.perspektifOrangLain,
       opsiTerpilihIndex: 0,
       keyakinanAwal: spek.keyakinanAwal,
       tanggalTargetReview: pending ? hariLalu(1) : hariLalu(spek.reviewedAtHariLalu ?? 0),
       status: pending ? 'menunggu_direview' : 'sudah_direview',
     }
 
-    if (pending || !spek.hasilAktual) {
+    if (pending || spek.hasilPersen === undefined) {
       return dasar
     }
 
     return {
       ...dasar,
-      hasilAktual: spek.hasilAktual,
+      hasilPersen: spek.hasilPersen,
       catatanHasil: 'Catatan dummy variatif.',
-      skorKalibrasi: hitungSkorKalibrasi(spek.keyakinanAwal, spek.hasilAktual),
+      skorKalibrasi: hitungSkorKalibrasi(spek.keyakinanAwal, spek.hasilPersen),
       refleksi: {
         apaYangBikinBegini: 'Refleksi dummy.',
         prosesYangMembantuAtauKurang: 'Proses dummy.',
         perasaanSekarang: 'Perasaan dummy.',
         halYangBedaKedepan: 'Hal beda dummy.',
+        metaRefleksi: spek.metaRefleksi,
       },
       reviewedAt: hariLalu(spek.reviewedAtHariLalu ?? 0),
     }

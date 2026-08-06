@@ -98,6 +98,24 @@ function Step4OpsiSkenario({ draft, onUpdate, onLanjut, onKembali }: Step4Props)
         </Button>
       )}
 
+      <div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <p style={{ ...labelStyle, fontSize: '1rem' }}>
+            Kalau orang yang kamu percaya lihat opsi-opsi ini, kira-kira dia bakal bilang apa? (opsional)
+          </p>
+          <Tooltip
+            istilah="Sudut Pandang Luar"
+            isi="Minta pendapat orang lain, bahkan cuma dibayangin, bisa nunjukin sudut pandang yang otak kamu sendiri suka lewatkan."
+          />
+        </div>
+        <textarea
+          value={draft.perspektifOrangLain ?? ''}
+          onChange={(e) => onUpdate({ perspektifOrangLain: e.target.value })}
+          rows={3}
+          style={{ ...textInputStyle, resize: 'vertical', marginTop: 8 }}
+        />
+      </div>
+
       <Button variant="primary" onClick={onLanjut} disabled={!bisaLanjut}>
         Lanjut
       </Button>

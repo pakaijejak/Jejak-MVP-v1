@@ -26,7 +26,7 @@ function KartuRingkasan({ keputusan, onSelesai }: KartuRingkasanProps) {
           <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-ink-muted)', fontSize: '0.8rem' }}>
             SESUDAH
           </p>
-          <p style={{ margin: 0 }}>Hasil: {keputusan.hasilAktual}</p>
+          <p style={{ margin: 0 }}>Hasil: {keputusan.hasilPersen}% sesuai harapan</p>
           <p style={{ margin: 0 }}>Kalibrasi: {keputusan.skorKalibrasi}</p>
           <p style={{ margin: 0 }}>Pelajaran: {keputusan.refleksi?.halYangBedaKedepan || '-'}</p>
         </div>
