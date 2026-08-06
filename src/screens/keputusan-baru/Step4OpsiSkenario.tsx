@@ -38,7 +38,7 @@ function Step4OpsiSkenario({ draft, onUpdate, onLanjut, onKembali }: Step4Props)
 
   return (
     <StepScreen step={4} totalSteps={6} onKembali={onKembali}>
-      <p style={labelStyle}>Tulis 2–3 opsi yang kamu pertimbangkan:</p>
+      <p style={labelStyle}>Tulis 2 sampai 3 opsi yang kamu pertimbangkan:</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {opsi.map((o, index) => (

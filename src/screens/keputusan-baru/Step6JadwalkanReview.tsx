@@ -36,17 +36,40 @@ function formatTanggal(tanggal: Date): string {
   return tanggal.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+function tanggalKeString(tanggal: Date): string {
+  const tahun = tanggal.getFullYear()
+  const bulan = String(tanggal.getMonth() + 1).padStart(2, '0')
+  const hari = String(tanggal.getDate()).padStart(2, '0')
+  return `${tahun}-${bulan}-${hari}`
+}
+
+function tanggalBukanMasaLalu(tanggal: Date): boolean {
+  const hariIni = new Date()
+  const tanggalTanpaJam = new Date(tanggal.getFullYear(), tanggal.getMonth(), tanggal.getDate())
+  const hariIniTanpaJam = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate())
+  return tanggalTanpaJam.getTime() >= hariIniTanpaJam.getTime()
+}
+
 function Step6JadwalkanReview({ onSimpan, onSelesai, onKembali }: Step6Props) {
   const [pilihan, setPilihan] = useState<PilihanCepat | null>(null)
   const [tanggalManual, setTanggalManual] = useState('')
   const [tersimpan, setTersimpan] = useState(false)
   const [tanggalTersimpan, setTanggalTersimpan] = useState<Date | null>(null)
+  const [pesanError, setPesanError] = useState('')
 
   const tanggalTerhitung = pilihan ? hitungTanggal(pilihan, tanggalManual) : null
   const bisaSimpan = tanggalTerhitung !== null
+  const tanggalMinimal = tanggalKeString(new Date())
 
   function handleKlikSimpan() {
     if (!tanggalTerhitung) return
+
+    if (!tanggalBukanMasaLalu(tanggalTerhitung)) {
+      setPesanError('Tanggal cek ulang tidak boleh di masa lalu. Pilih hari ini atau tanggal setelahnya.')
+      return
+    }
+
+    setPesanError('')
     onSimpan(tanggalTerhitung.toISOString())
     setTanggalTersimpan(tanggalTerhitung)
     setTersimpan(true)
@@ -82,9 +105,17 @@ function Step6JadwalkanReview({ onSimpan, onSelesai, onKembali }: Step6Props) {
           <input
             type="date"
             value={tanggalManual}
-            onChange={(e) => setTanggalManual(e.target.value)}
+            min={tanggalMinimal}
+            onChange={(e) => {
+              setTanggalManual(e.target.value)
+              setPesanError('')
+            }}
             style={{ ...textInputStyle, marginTop: 12 }}
           />
+        )}
+
+        {pesanError && (
+          <p style={{ color: 'var(--color-accent)', fontSize: '0.9rem', marginTop: 12 }}>{pesanError}</p>
         )}
       </div>
 

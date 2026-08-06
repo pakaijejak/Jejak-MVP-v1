@@ -45,7 +45,7 @@ function Step5Putuskan({ draft, onUpdate, onLanjut, onKembali }: Step5Props) {
           <p style={{ ...labelStyle, fontSize: '1rem' }}>Seberapa yakin ini keputusan yang tepat?</p>
           <Tooltip
             istilah="Kalibrasi Keyakinan"
-            isi="Rasa yakin itu gampang meleset dari kenyataan — banyak orang yakin 90% padahal hasilnya cuma benar separuhnya. Nilai jujur di sini, bukan yang 'kedengarannya pede'."
+            isi="Rasa yakin itu gampang meleset dari kenyataan. Banyak orang yakin 90% padahal hasilnya cuma benar separuhnya. Nilai jujur di sini, bukan yang 'kedengarannya pede'."
           />
         </div>
         <input
