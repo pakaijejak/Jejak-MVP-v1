@@ -1,0 +1,33 @@
+import Button from '../components/Button'
+import Screen from '../components/Screen'
+
+interface OnboardingProps {
+  onCobaSekarang: () => void
+  onLewati: () => void
+}
+
+function Onboarding({ onCobaSekarang, onLewati }: OnboardingProps) {
+  return (
+    <Screen>
+      <div>
+        <p style={{ margin: 0, color: 'var(--color-ink-muted)', fontSize: '0.95rem' }}>
+          Yuk coba dulu pakai contoh receh:
+        </p>
+        <h1 style={{ margin: '8px 0 0', fontSize: '1.75rem', lineHeight: 1.3 }}>
+          Mau makan siang apa hari ini?
+        </h1>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <Button variant="primary" onClick={onCobaSekarang}>
+          Coba Sekarang
+        </Button>
+        <Button variant="text" onClick={onLewati}>
+          Lewati, langsung ke keputusan saya
+        </Button>
+      </div>
+    </Screen>
+  )
+}
+
+export default Onboarding
