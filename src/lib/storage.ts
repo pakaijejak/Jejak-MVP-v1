@@ -4,6 +4,9 @@ const KEPUTUSAN_KEY = 'jejak:keputusan';
 const ONBOARDING_SELESAI_KEY = 'jejak:onboardingSelesai';
 const OPT_IN_STATUS_KEY = 'jejak:optInStatus';
 const TAMPILKAN_GRAFIK_POLA_KEY = 'jejak:tampilkanGrafikPola';
+const NAMA_SAPAAN_KEY = 'jejak:namaSapaan';
+
+export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
 
 type KeputusanBaru = Omit<Keputusan, 'id' | 'createdAt' | 'status'>;
 
@@ -33,6 +36,27 @@ export function tambahKeputusan(data: KeputusanBaru): Keputusan {
 export function tambahKeputusanBanyak(daftar: Keputusan[]): void {
   const semua = ambilSemuaKeputusan();
   simpanSemuaKeputusan([...semua, ...daftar]);
+}
+
+export function ambilKategoriCustom(): string[] {
+  const tetapLower = new Set(KATEGORI_TETAP.map((k) => k.toLowerCase()));
+  const terlihat = new Set<string>();
+  const hasil: string[] = [];
+
+  for (const k of ambilSemuaKeputusan()) {
+    const lower = k.kategori.toLowerCase();
+    if (tetapLower.has(lower) || terlihat.has(lower)) continue;
+    terlihat.add(lower);
+    hasil.push(k.kategori);
+  }
+
+  return hasil;
+}
+
+export function resolveKategori(teks: string): string {
+  const bersih = teks.trim();
+  const sudahAda = ambilKategoriCustom().find((k) => k.toLowerCase() === bersih.toLowerCase());
+  return sudahAda ?? bersih;
 }
 
 export function ambilKeputusanById(id: string): Keputusan | undefined {
@@ -100,9 +124,23 @@ export function setTampilkanGrafikPola(tampilkan: boolean): void {
   localStorage.setItem(TAMPILKAN_GRAFIK_POLA_KEY, String(tampilkan));
 }
 
+export function ambilNamaSapaan(): string {
+  return localStorage.getItem(NAMA_SAPAAN_KEY) ?? '';
+}
+
+export function setNamaSapaan(nama: string): void {
+  const bersih = nama.trim();
+  if (bersih) {
+    localStorage.setItem(NAMA_SAPAAN_KEY, bersih);
+  } else {
+    localStorage.removeItem(NAMA_SAPAAN_KEY);
+  }
+}
+
 export function hapusSemuaData(): void {
   localStorage.removeItem(KEPUTUSAN_KEY);
   localStorage.removeItem(ONBOARDING_SELESAI_KEY);
   localStorage.removeItem(OPT_IN_STATUS_KEY);
   localStorage.removeItem(TAMPILKAN_GRAFIK_POLA_KEY);
+  localStorage.removeItem(NAMA_SAPAAN_KEY);
 }

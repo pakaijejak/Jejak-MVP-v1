@@ -47,7 +47,7 @@ function Step3CekFakta({ draft, onUpdate, onLanjut, onKembali }: Step3Props) {
           </p>
           <Tooltip
             istilah="Asumsi Tersembunyi"
-            isi="Otak kita sering nganggep sesuatu pasti benar tanpa sadar itu cuma asumsi. Nyadarin ini bikin kamu lihat opsi yang tadinya nggak kepikiran."
+            isi="Otak kita sering menganggap sesuatu pasti benar tanpa sadar itu cuma asumsi. Menyadari ini, bikin kamu lihat opsi yang tadinya nggak kepikiran."
           />
         </div>
         <textarea

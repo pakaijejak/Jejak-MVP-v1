@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import BottomSheet from './BottomSheet'
 
 interface TooltipProps {
   istilah: string
@@ -34,55 +35,27 @@ function Tooltip({ istilah, isi }: TooltipProps) {
         ?
       </button>
 
-      {terbuka && (
-        <div
+      <BottomSheet terbuka={terbuka} onTutup={() => setTerbuka(false)}>
+        <h3 style={{ margin: 0, fontSize: '1.05rem' }}>{istilah}</h3>
+        <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>{isi}</p>
+        <button
+          type="button"
           onClick={() => setTerbuka(false)}
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(43, 58, 66, 0.4)',
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            zIndex: 50,
+            marginTop: 8,
+            alignSelf: 'flex-start',
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--color-ink)',
+            fontWeight: 600,
+            fontFamily: 'inherit',
+            cursor: 'pointer',
+            padding: 0,
           }}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '100%',
-              maxWidth: 480,
-              background: 'var(--color-surface)',
-              borderRadius: '20px 20px 0 0',
-              padding: 24,
-              boxSizing: 'border-box',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 12,
-            }}
-          >
-            <h3 style={{ margin: 0, fontSize: '1.05rem' }}>{istilah}</h3>
-            <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>{isi}</p>
-            <button
-              type="button"
-              onClick={() => setTerbuka(false)}
-              style={{
-                marginTop: 8,
-                alignSelf: 'flex-start',
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--color-ink)',
-                fontWeight: 600,
-                fontFamily: 'inherit',
-                cursor: 'pointer',
-                padding: 0,
-              }}
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
+          Tutup
+        </button>
+      </BottomSheet>
     </>
   )
 }

@@ -1,14 +1,19 @@
 import { useMemo, useState } from 'react'
 import Chip from '../../components/Chip'
+import ChipRow from '../../components/ChipRow'
 import Screen from '../../components/Screen'
-import { ambilSemuaKeputusan, ambilTampilkanGrafikPola, setTampilkanGrafikPola } from '../../lib/storage'
-import type { Keputusan } from '../../types/keputusan'
+import {
+  KATEGORI_TETAP,
+  ambilKategoriCustom,
+  ambilSemuaKeputusan,
+  ambilTampilkanGrafikPola,
+  setTampilkanGrafikPola,
+} from '../../lib/storage'
 import DetailKeputusan from './DetailKeputusan'
 import GrafikKalibrasi from './GrafikKalibrasi'
 import KartuRiwayat from './KartuRiwayat'
 
-const KATEGORI_LIST: Keputusan['kategori'][] = ['Karier', 'Uang', 'Relasi', 'Kesehatan', 'Lainnya']
-type FilterKategori = 'Semua' | Keputusan['kategori']
+type FilterKategori = 'Semua' | string
 
 interface RiwayatPolaProps {
   onKembali: () => void
@@ -17,12 +22,14 @@ interface RiwayatPolaProps {
 
 function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
   const [semua] = useState(() => ambilSemuaKeputusan())
+  const [kategoriCustom] = useState(() => ambilKategoriCustom())
   const [filter, setFilter] = useState<FilterKategori>('Semua')
   const [tampilkanGrafik, setTampilkanGrafikState] = useState(() => ambilTampilkanGrafikPola())
   const [idDetail, setIdDetail] = useState<string | null>(null)
 
   const terfilter = useMemo(() => {
-    const hasil = filter === 'Semua' ? semua : semua.filter((k) => k.kategori === filter)
+    const hasil =
+      filter === 'Semua' ? semua : semua.filter((k) => k.kategori.toLowerCase() === filter.toLowerCase())
     return [...hasil].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [semua, filter])
 
@@ -63,20 +70,29 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
       </div>
 
       <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
-        Riwayat ini bukan rapor buat menilai kamu. Ini buat bantu kamu liat pola cara mikirmu dari waktu ke waktu.
+        Riwayat ini bukan rapor buat menilai kamu. Ini buat bantu kamu liat pola cara berpikirmu dari waktu ke
+        waktu.
       </p>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+      <ChipRow>
         <Chip label="Semua" selected={filter === 'Semua'} onClick={() => setFilter('Semua')} />
-        {KATEGORI_LIST.map((kategori) => (
+        {KATEGORI_TETAP.map((kategori) => (
           <Chip
             key={kategori}
             label={kategori}
-            selected={filter === kategori}
+            selected={filter !== 'Semua' && filter.toLowerCase() === kategori.toLowerCase()}
             onClick={() => setFilter(kategori)}
           />
         ))}
-      </div>
+        {kategoriCustom.map((kategori) => (
+          <Chip
+            key={kategori}
+            label={kategori}
+            selected={filter !== 'Semua' && filter.toLowerCase() === kategori.toLowerCase()}
+            onClick={() => setFilter(kategori)}
+          />
+        ))}
+      </ChipRow>
 
       <div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

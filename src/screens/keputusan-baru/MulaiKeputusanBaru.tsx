@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { tambahKeputusan } from '../../lib/storage'
+import { resolveKategori, tambahKeputusan } from '../../lib/storage'
 import Step1RumuskanMasalah from './Step1RumuskanMasalah'
 import Step2JedaEmosi from './Step2JedaEmosi'
 import Step3CekFakta from './Step3CekFakta'
@@ -32,8 +32,8 @@ function MulaiKeputusanBaru({ onSelesai, onBatal }: MulaiKeputusanBaruProps) {
   function simpanKeputusan(tanggalTargetReview: string) {
     tambahKeputusan({
       masalah: draft.masalah,
-      kategori: draft.kategori as NonNullable<KeputusanDraft['kategori']>,
-      emosi: draft.emosi as NonNullable<KeputusanDraft['emosi']>,
+      kategori: resolveKategori(draft.kategori as string),
+      emosi: draft.emosi as string,
       intensitasEmosi: draft.intensitasEmosi as NonNullable<KeputusanDraft['intensitasEmosi']>,
       infoYangDimiliki: draft.infoYangDimiliki,
       asumsiYangDianggapPasti: draft.asumsiYangDianggapPasti?.trim() || undefined,

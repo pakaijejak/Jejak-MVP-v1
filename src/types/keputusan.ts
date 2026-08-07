@@ -4,10 +4,10 @@ export interface Keputusan {
 
   // Step 1 — Rumuskan Masalah
   masalah: string;
-  kategori: 'Karier' | 'Uang' | 'Relasi' | 'Kesehatan' | 'Lainnya';
+  kategori: string; // 4 kategori tetap, atau kategori custom bebas dari user
 
   // Step 2 — Jeda Emosi
-  emosi: 'Cemas' | 'Bingung' | 'Marah' | 'Sedih' | 'Netral' | 'Bersemangat';
+  emosi: string; // 6 emosi tetap, atau hasil drill-down Roda Perasaan (custom)
   intensitasEmosi: 'Ringan' | 'Sedang' | 'Kuat';
 
   // Step 3 — Cek Fakta vs Asumsi

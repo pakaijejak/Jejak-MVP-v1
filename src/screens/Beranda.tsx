@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import Button from '../components/Button'
 import Screen from '../components/Screen'
-import { ambilKeputusanPending } from '../lib/storage'
+import { ambilKeputusanPending, ambilNamaSapaan, setNamaSapaan } from '../lib/storage'
+import EditNamaSapaan from './EditNamaSapaan'
 
 interface BerandaProps {
   onMulaiKeputusanBaru: () => void
@@ -11,10 +12,22 @@ interface BerandaProps {
 
 function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: BerandaProps) {
   const [pending] = useState(() => ambilKeputusanPending())
+  const [namaSapaan, setNamaSapaanState] = useState(() => ambilNamaSapaan())
 
   return (
     <Screen>
-      <h1 style={{ margin: 0, fontSize: '1.5rem' }}>👋 Selamat datang lagi!</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        <h1 style={{ margin: 0, fontSize: '1.5rem' }}>
+          👋 Selamat datang lagi{namaSapaan ? `, ${namaSapaan}` : ''}!
+        </h1>
+        <EditNamaSapaan
+          namaSaatIni={namaSapaan}
+          onSimpan={(nama) => {
+            setNamaSapaan(nama)
+            setNamaSapaanState(ambilNamaSapaan())
+          }}
+        />
+      </div>
 
       {pending.length > 0 && (
         <div

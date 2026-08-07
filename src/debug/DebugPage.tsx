@@ -21,8 +21,8 @@ function buatDataContoh(): Omit<Keputusan, 'id' | 'createdAt' | 'status'> {
 
   return {
     masalah: 'Contoh masalah dummy dibuat pada ' + new Date().toLocaleTimeString(),
-    kategori: 'Karier',
-    emosi: 'Cemas',
+    kategori: 'Hobi',
+    emosi: 'Cemburu',
     intensitasEmosi: 'Sedang',
     infoYangDimiliki: 'Info dummy yang sudah dikumpulkan.',
     asumsiYangDianggapPasti: 'Saya anggap pasti atasan akan langsung setuju.',
@@ -45,7 +45,8 @@ function hariLalu(n: number): string {
 }
 
 interface SpekVariatif {
-  kategori: Keputusan['kategori']
+  kategori: string
+  emosi?: string
   keyakinanAwal: number
   hasilPersen?: number
   createdAtHariLalu: number
@@ -55,14 +56,16 @@ interface SpekVariatif {
   metaRefleksi?: string
 }
 
-// Sebar kategori (Karier sengaja diberi 5 entri supaya insight pola di Step 8 ikut ketes),
-// sebagian besar sudah_direview dengan variasi kalibrasi, sisanya menunggu_direview,
-// tanggal disebar di beberapa hari terakhir supaya grafik punya bentuk. Beberapa entri
-// diisi field baru (asumsiYangDianggapPasti, perspektifOrangLain, metaRefleksi) supaya
-// layar detail di Riwayat & Pola ikut ketes datanya lengkap.
+// Sebar kategori (Karier sengaja diberi 5 entri supaya insight pola di Step 8 ikut ketes,
+// plus beberapa kategori custom di luar 4 kategori tetap), sebagian besar sudah_direview
+// dengan variasi kalibrasi, sisanya menunggu_direview, tanggal disebar di beberapa hari
+// terakhir supaya grafik punya bentuk. Beberapa entri diisi field baru
+// (asumsiYangDianggapPasti, perspektifOrangLain, metaRefleksi, emosi custom dari Roda
+// Perasaan) supaya fitur kategori/emosi custom dan layar detail Riwayat & Pola ikut ketes.
 const SPEK_VARIATIF: SpekVariatif[] = [
   {
     kategori: 'Karier',
+    emosi: 'Percaya Diri',
     keyakinanAwal: 88,
     hasilPersen: 92,
     createdAtHariLalu: 20,
@@ -73,6 +76,7 @@ const SPEK_VARIATIF: SpekVariatif[] = [
   { kategori: 'Karier', keyakinanAwal: 90, hasilPersen: 10, createdAtHariLalu: 18, reviewedAtHariLalu: 12 },
   {
     kategori: 'Karier',
+    emosi: 'Frustasi',
     keyakinanAwal: 25,
     hasilPersen: 85,
     createdAtHariLalu: 16,
@@ -82,7 +86,7 @@ const SPEK_VARIATIF: SpekVariatif[] = [
   { kategori: 'Karier', keyakinanAwal: 60, hasilPersen: 55, createdAtHariLalu: 14, reviewedAtHariLalu: 8 },
   { kategori: 'Karier', keyakinanAwal: 80, hasilPersen: 15, createdAtHariLalu: 12, reviewedAtHariLalu: 6 },
   {
-    kategori: 'Uang',
+    kategori: 'Investasi',
     keyakinanAwal: 70,
     hasilPersen: 75,
     createdAtHariLalu: 10,
@@ -90,14 +94,15 @@ const SPEK_VARIATIF: SpekVariatif[] = [
     asumsiYangDianggapPasti: 'Saya pikir harga pasti naik terus.',
   },
   {
-    kategori: 'Relasi',
+    kategori: 'Keluarga',
+    emosi: 'Tenteram',
     keyakinanAwal: 50,
     hasilPersen: 45,
     createdAtHariLalu: 9,
     reviewedAtHariLalu: 4,
     perspektifOrangLain: 'Sahabat bilang wajar kalau ragu.',
   },
-  { kategori: 'Uang', keyakinanAwal: 65, createdAtHariLalu: 3 },
+  { kategori: 'Hobi', keyakinanAwal: 65, createdAtHariLalu: 3 },
   { kategori: 'Relasi', keyakinanAwal: 55, createdAtHariLalu: 2 },
   { kategori: 'Kesehatan', keyakinanAwal: 40, createdAtHariLalu: 1 },
 ]
@@ -111,7 +116,7 @@ function buatBanyakDataContohVariatif(): Keputusan[] {
       createdAt: hariLalu(spek.createdAtHariLalu),
       masalah: `Contoh variatif ${spek.kategori} #${index + 1}`,
       kategori: spek.kategori,
-      emosi: 'Netral',
+      emosi: spek.emosi ?? 'Netral',
       intensitasEmosi: 'Sedang',
       infoYangDimiliki: 'Info dummy variatif.',
       asumsiYangDianggapPasti: spek.asumsiYangDianggapPasti,
