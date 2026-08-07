@@ -153,7 +153,13 @@ function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
             onClick={() => pilihTetap(emosi)}
           />
         ))}
-        <Chip label="Lainnya" selected={state.aktif === 'lainnya'} onClick={bukaWheel} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Chip label="Lainnya" selected={state.aktif === 'lainnya'} onClick={bukaWheel} />
+          <Tooltip
+            istilah="Roda Perasaan (Feeling Wheel)"
+            isi="Kosakata perasaan yang lebih spesifik ini diambil dari Roda Perasaan (Feeling Wheel), dirancang oleh psikoterapis Dr. Gloria Willcox. Semakin spesifik nama emosinya, biasanya semakin mudah juga meredakannya."
+          />
+        </div>
       </div>
 
       {state.modeWheel && (
