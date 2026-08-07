@@ -7,9 +7,11 @@ import {
   ambilOnboardingSelesai,
   ambilOptInStatus,
   ambilSemuaKeputusan,
+  ambilTerverifikasi,
   hapusSemuaData,
   setOnboardingSelesai,
   setOptInStatus,
+  setTerverifikasi,
   tambahKeputusan,
   tambahKeputusanBanyak,
 } from '../lib/storage'
@@ -157,6 +159,7 @@ function DebugPage() {
   const [semua, setSemua] = useState<Keputusan[]>(() => ambilSemuaKeputusan())
   const [onboardingSelesai, setOnboardingSelesaiState] = useState(() => ambilOnboardingSelesai())
   const [optInStatus, setOptInStatusState] = useState(() => ambilOptInStatus())
+  const [terverifikasi, setTerverifikasiState] = useState(() => ambilTerverifikasi())
 
   function refresh() {
     setSemua(ambilSemuaKeputusan())
@@ -177,12 +180,19 @@ function DebugPage() {
     refresh()
     setOnboardingSelesaiState(ambilOnboardingSelesai())
     setOptInStatusState(ambilOptInStatus())
+    setTerverifikasiState(ambilTerverifikasi())
   }
 
   function handleToggleOnboarding() {
     const next = !onboardingSelesai
     setOnboardingSelesai(next)
     setOnboardingSelesaiState(next)
+  }
+
+  function handleToggleTerverifikasi() {
+    const next = !terverifikasi
+    setTerverifikasi(next)
+    setTerverifikasiState(next)
   }
 
   function handleCycleOptIn() {
@@ -208,6 +218,12 @@ function DebugPage() {
       </button>
 
       <h2>Flag Global</h2>
+      <p>
+        terverifikasi: {String(terverifikasi)}{' '}
+        <button type="button" onClick={handleToggleTerverifikasi}>
+          Toggle
+        </button>
+      </p>
       <p>
         onboardingSelesai: {String(onboardingSelesai)}{' '}
         <button type="button" onClick={handleToggleOnboarding}>

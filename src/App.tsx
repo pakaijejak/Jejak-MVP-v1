@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import DebugPage from './debug/DebugPage'
-import { ambilOnboardingSelesai, setOnboardingSelesai } from './lib/storage'
+import { ambilOnboardingSelesai, ambilTerverifikasi, setOnboardingSelesai, setTerverifikasi } from './lib/storage'
 import Beranda from './screens/Beranda'
 import CekHasilFlow from './screens/cek-hasil/CekHasilFlow'
+import GerbangAkses from './screens/GerbangAkses'
 import LihatCekHasil from './screens/LihatCekHasil'
 import Onboarding from './screens/Onboarding'
 import OnboardingContoh from './screens/OnboardingContoh'
@@ -89,12 +90,29 @@ function MainApp() {
   }
 }
 
+function AksesGate() {
+  const [terverifikasi, setTerverifikasiState] = useState(() => ambilTerverifikasi())
+
+  if (!terverifikasi) {
+    return (
+      <GerbangAkses
+        onTerverifikasi={() => {
+          setTerverifikasi(true)
+          setTerverifikasiState(true)
+        }}
+      />
+    )
+  }
+
+  return <MainApp />
+}
+
 function App() {
   if (window.location.pathname === '/debug') {
     return <DebugPage />
   }
 
-  return <MainApp />
+  return <AksesGate />
 }
 
 export default App

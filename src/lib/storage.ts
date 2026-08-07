@@ -6,6 +6,7 @@ const OPT_IN_STATUS_KEY = 'jejak:optInStatus';
 const TAMPILKAN_GRAFIK_POLA_KEY = 'jejak:tampilkanGrafikPola';
 const NAMA_SAPAAN_KEY = 'jejak:namaSapaan';
 const KATEGORI_TERSEMBUNYI_KEY = 'jejak:kategoriTersembunyi';
+const TERVERIFIKASI_KEY = 'jejak:terverifikasi';
 
 export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
 const KATA_LAINNYA = 'lainnya';
@@ -161,6 +162,14 @@ export function setNamaSapaan(nama: string): void {
   }
 }
 
+export function ambilTerverifikasi(): boolean {
+  return localStorage.getItem(TERVERIFIKASI_KEY) === 'true';
+}
+
+export function setTerverifikasi(status: boolean): void {
+  localStorage.setItem(TERVERIFIKASI_KEY, String(status));
+}
+
 export function hapusSemuaData(): void {
   localStorage.removeItem(KEPUTUSAN_KEY);
   localStorage.removeItem(ONBOARDING_SELESAI_KEY);
@@ -168,4 +177,5 @@ export function hapusSemuaData(): void {
   localStorage.removeItem(TAMPILKAN_GRAFIK_POLA_KEY);
   localStorage.removeItem(NAMA_SAPAAN_KEY);
   localStorage.removeItem(KATEGORI_TERSEMBUNYI_KEY);
+  localStorage.removeItem(TERVERIFIKASI_KEY);
 }
