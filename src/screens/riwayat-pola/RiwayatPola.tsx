@@ -95,7 +95,21 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
       </ChipRow>
 
       <div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: '0.8rem', color: 'var(--color-ink-muted)' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span
+                style={{ width: 8, height: 8, borderRadius: '50%', background: '#C1793F', display: 'inline-block' }}
+              />
+              Prediksi
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span
+                style={{ width: 8, height: 8, borderRadius: '50%', background: '#2B3A42', display: 'inline-block' }}
+              />
+              Hasil
+            </span>
+          </div>
           <button
             type="button"
             onClick={toggleGrafik}
@@ -108,6 +122,7 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
               cursor: 'pointer',
               fontFamily: 'inherit',
               textDecoration: 'underline',
+              whiteSpace: 'nowrap',
             }}
           >
             {tampilkanGrafik ? '👁 Sembunyikan grafik' : '👁 Tampilkan grafik'}

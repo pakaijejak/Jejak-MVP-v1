@@ -19,30 +19,69 @@ interface Step2Props {
   onKembali: () => void
 }
 
+// "aktif" menandai chip mana SATU-SATUNYA yang tampil solid (terakhir ditap).
+// intiIndex/cabangIndex hanya mengontrol baris mana yang ditampilkan (tidak collapse),
+// terpisah dari state highlight supaya chip di tingkat atas tidak ikut solid selamanya
+// begitu user drill down lebih dalam.
+type ChipAktif = 'tetap' | 'lainnya' | 'inti' | 'cabang' | 'daun'
+
 interface StateWheel {
   modeWheel: boolean
   intiIndex: number | null
   cabangIndex: number | null
   negatif: boolean
+  aktif: ChipAktif
+  tetapAktif: string | null
 }
 
 function cariStateAwal(emosi: string | undefined): StateWheel {
-  const kosong: StateWheel = { modeWheel: false, intiIndex: null, cabangIndex: null, negatif: false }
+  const kosong: StateWheel = {
+    modeWheel: false,
+    intiIndex: null,
+    cabangIndex: null,
+    negatif: false,
+    aktif: 'tetap',
+    tetapAktif: null,
+  }
   if (!emosi) return kosong
 
   if (EMOSI_TETAP.includes(emosi)) {
-    return { ...kosong, negatif: EMOSI_TETAP_NEGATIF.includes(emosi) }
+    return { ...kosong, negatif: EMOSI_TETAP_NEGATIF.includes(emosi), tetapAktif: emosi }
   }
 
   for (let i = 0; i < RODA_PERASAAN.length; i++) {
     const inti = RODA_PERASAAN[i]
     if (inti.inti === emosi) {
-      return { modeWheel: true, intiIndex: i, cabangIndex: null, negatif: INTI_NEGATIF.includes(inti.inti) }
+      return {
+        modeWheel: true,
+        intiIndex: i,
+        cabangIndex: null,
+        negatif: INTI_NEGATIF.includes(inti.inti),
+        aktif: 'inti',
+        tetapAktif: null,
+      }
     }
     for (let j = 0; j < inti.cabang.length; j++) {
       const c = inti.cabang[j]
-      if (c.cabang === emosi || c.daun === emosi) {
-        return { modeWheel: true, intiIndex: i, cabangIndex: j, negatif: INTI_NEGATIF.includes(inti.inti) }
+      if (c.cabang === emosi) {
+        return {
+          modeWheel: true,
+          intiIndex: i,
+          cabangIndex: j,
+          negatif: INTI_NEGATIF.includes(inti.inti),
+          aktif: 'cabang',
+          tetapAktif: null,
+        }
+      }
+      if (c.daun === emosi) {
+        return {
+          modeWheel: true,
+          intiIndex: i,
+          cabangIndex: j,
+          negatif: INTI_NEGATIF.includes(inti.inti),
+          aktif: 'daun',
+          tetapAktif: null,
+        }
       }
     }
   }
@@ -57,29 +96,44 @@ function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
   const emosiKuatNegatif = draft.intensitasEmosi === 'Kuat' && state.negatif
 
   function pilihTetap(emosi: string) {
-    setState({ modeWheel: false, intiIndex: null, cabangIndex: null, negatif: EMOSI_TETAP_NEGATIF.includes(emosi) })
+    setState({
+      modeWheel: false,
+      intiIndex: null,
+      cabangIndex: null,
+      negatif: EMOSI_TETAP_NEGATIF.includes(emosi),
+      aktif: 'tetap',
+      tetapAktif: emosi,
+    })
     onUpdate({ emosi })
   }
 
   function bukaWheel() {
-    setState({ modeWheel: true, intiIndex: null, cabangIndex: null, negatif: false })
+    setState({ modeWheel: true, intiIndex: null, cabangIndex: null, negatif: false, aktif: 'lainnya', tetapAktif: null })
     onUpdate({ emosi: undefined })
   }
 
   function pilihInti(index: number) {
     const inti = RODA_PERASAAN[index]
-    setState({ modeWheel: true, intiIndex: index, cabangIndex: null, negatif: INTI_NEGATIF.includes(inti.inti) })
+    setState({
+      modeWheel: true,
+      intiIndex: index,
+      cabangIndex: null,
+      negatif: INTI_NEGATIF.includes(inti.inti),
+      aktif: 'inti',
+      tetapAktif: null,
+    })
     onUpdate({ emosi: inti.inti })
   }
 
   function pilihCabang(index: number) {
     if (state.intiIndex === null) return
-    setState((prev) => ({ ...prev, cabangIndex: index }))
+    setState((prev) => ({ ...prev, cabangIndex: index, aktif: 'cabang' }))
     onUpdate({ emosi: RODA_PERASAAN[state.intiIndex].cabang[index].cabang })
   }
 
   function pilihDaun() {
     if (state.intiIndex === null || state.cabangIndex === null) return
+    setState((prev) => ({ ...prev, aktif: 'daun' }))
     onUpdate({ emosi: RODA_PERASAAN[state.intiIndex].cabang[state.cabangIndex].daun })
   }
 
@@ -95,11 +149,11 @@ function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
           <Chip
             key={emosi}
             label={emosi}
-            selected={!state.modeWheel && draft.emosi === emosi}
+            selected={state.aktif === 'tetap' && state.tetapAktif === emosi}
             onClick={() => pilihTetap(emosi)}
           />
         ))}
-        <Chip label="Lainnya" selected={state.modeWheel} onClick={bukaWheel} />
+        <Chip label="Lainnya" selected={state.aktif === 'lainnya'} onClick={bukaWheel} />
       </div>
 
       {state.modeWheel && (
@@ -108,7 +162,7 @@ function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
             <Chip
               key={inti.inti}
               label={inti.inti}
-              selected={state.intiIndex === index}
+              selected={state.aktif === 'inti' && state.intiIndex === index}
               onClick={() => pilihInti(index)}
             />
           ))}
@@ -121,7 +175,7 @@ function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
             <Chip
               key={index}
               label={c.cabang}
-              selected={state.cabangIndex === index}
+              selected={state.aktif === 'cabang' && state.cabangIndex === index}
               onClick={() => pilihCabang(index)}
             />
           ))}
@@ -130,7 +184,7 @@ function Step2JedaEmosi({ draft, onUpdate, onLanjut, onKembali }: Step2Props) {
 
       {cabangAktif && (
         <div>
-          <Chip label={cabangAktif.daun} selected={draft.emosi === cabangAktif.daun} onClick={pilihDaun} />
+          <Chip label={cabangAktif.daun} selected={state.aktif === 'daun'} onClick={pilihDaun} />
         </div>
       )}
 
