@@ -29,18 +29,19 @@ function EditNamaSapaan({ namaSaatIni, onSimpan }: EditNamaSapaanProps) {
       <button
         type="button"
         onClick={buka}
-        aria-label="Ubah nama sapaan"
         style={{
           background: 'none',
           border: 'none',
-          fontSize: '1rem',
-          color: 'var(--color-ink-muted)',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          color: 'var(--color-accent)',
           cursor: 'pointer',
-          padding: 4,
-          lineHeight: 1,
+          padding: 0,
+          fontFamily: 'inherit',
+          textAlign: 'left',
         }}
       >
-        ✏️
+        {namaSaatIni ? 'Ubah nama' : '+ Kasih nama panggilan'}
       </button>
 
       <BottomSheet terbuka={terbuka} onTutup={() => setTerbuka(false)}>

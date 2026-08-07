@@ -16,17 +16,19 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: Beran
 
   return (
     <Screen>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <div>
         <h1 style={{ margin: 0, fontSize: '1.5rem' }}>
           👋 Selamat datang lagi{namaSapaan ? `, ${namaSapaan}` : ''}!
         </h1>
-        <EditNamaSapaan
-          namaSaatIni={namaSapaan}
-          onSimpan={(nama) => {
-            setNamaSapaan(nama)
-            setNamaSapaanState(ambilNamaSapaan())
-          }}
-        />
+        <div style={{ marginTop: 4 }}>
+          <EditNamaSapaan
+            namaSaatIni={namaSapaan}
+            onSimpan={(nama) => {
+              setNamaSapaan(nama)
+              setNamaSapaanState(ambilNamaSapaan())
+            }}
+          />
+        </div>
       </div>
 
       {pending.length > 0 && (

@@ -1,7 +1,5 @@
 // Roda Perasaan Dr. Gloria Wilcox, diterjemahkan dari jurnal asli.
 // Data ini sudah final dan terkunci — jangan diubah tanpa instruksi eksplisit.
-// Catatan: di "Gembira" ada 2 cabang bernama sama persis "Bersemangat"
-// (menuju "Berani" dan "Memukau") — ini disengaja, bukan duplikat data yang keliru.
 
 export interface CabangEmosi {
   cabang: string
@@ -29,7 +27,7 @@ export const RODA_PERASAAN: IntiEmosi[] = [
     inti: 'Gembira',
     cabang: [
       { cabang: 'Bersemangat', daun: 'Berani' },
-      { cabang: 'Bersemangat', daun: 'Memukau' },
+      { cabang: 'Heboh', daun: 'Memukau' },
       { cabang: 'Enerjik', daun: 'Terstimulasi' },
       { cabang: 'Menyenangkan', daun: 'Terhibur' },
       { cabang: 'Kreatif', daun: 'Berlebihan' },

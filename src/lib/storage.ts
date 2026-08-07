@@ -5,8 +5,10 @@ const ONBOARDING_SELESAI_KEY = 'jejak:onboardingSelesai';
 const OPT_IN_STATUS_KEY = 'jejak:optInStatus';
 const TAMPILKAN_GRAFIK_POLA_KEY = 'jejak:tampilkanGrafikPola';
 const NAMA_SAPAAN_KEY = 'jejak:namaSapaan';
+const KATEGORI_TERSEMBUNYI_KEY = 'jejak:kategoriTersembunyi';
 
 export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
+const KATA_LAINNYA = 'lainnya';
 
 type KeputusanBaru = Omit<Keputusan, 'id' | 'createdAt' | 'status'>;
 
@@ -45,7 +47,9 @@ export function ambilKategoriCustom(): string[] {
 
   for (const k of ambilSemuaKeputusan()) {
     const lower = k.kategori.toLowerCase();
-    if (tetapLower.has(lower) || terlihat.has(lower)) continue;
+    // "Lainnya" adalah kata pemicu yang dicadangkan (bukan kategori sungguhan), jadi
+    // dikecualikan supaya tidak pernah muncul dobel dengan chip trigger "Lainnya".
+    if (tetapLower.has(lower) || lower === KATA_LAINNYA || terlihat.has(lower)) continue;
     terlihat.add(lower);
     hasil.push(k.kategori);
   }
@@ -57,6 +61,26 @@ export function resolveKategori(teks: string): string {
   const bersih = teks.trim();
   const sudahAda = ambilKategoriCustom().find((k) => k.toLowerCase() === bersih.toLowerCase());
   return sudahAda ?? bersih;
+}
+
+export function ambilKategoriTersembunyi(): string[] {
+  const raw = localStorage.getItem(KATEGORI_TERSEMBUNYI_KEY);
+  if (!raw) return [];
+  return JSON.parse(raw) as string[];
+}
+
+export function sembunyikanKategori(kategori: string): void {
+  const daftar = ambilKategoriTersembunyi();
+  if (daftar.some((k) => k.toLowerCase() === kategori.toLowerCase())) return;
+  daftar.push(kategori);
+  localStorage.setItem(KATEGORI_TERSEMBUNYI_KEY, JSON.stringify(daftar));
+}
+
+// Kategori custom yang masih boleh dipilih untuk keputusan baru — kategori yang
+// sudah disembunyikan tetap ada di data lama, cuma tidak lagi ditawarkan sebagai chip.
+export function ambilKategoriCustomTerlihat(): string[] {
+  const tersembunyi = new Set(ambilKategoriTersembunyi().map((k) => k.toLowerCase()));
+  return ambilKategoriCustom().filter((k) => !tersembunyi.has(k.toLowerCase()));
 }
 
 export function ambilKeputusanById(id: string): Keputusan | undefined {
@@ -143,4 +167,5 @@ export function hapusSemuaData(): void {
   localStorage.removeItem(OPT_IN_STATUS_KEY);
   localStorage.removeItem(TAMPILKAN_GRAFIK_POLA_KEY);
   localStorage.removeItem(NAMA_SAPAAN_KEY);
+  localStorage.removeItem(KATEGORI_TERSEMBUNYI_KEY);
 }
