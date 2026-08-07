@@ -7,6 +7,7 @@ const TAMPILKAN_GRAFIK_POLA_KEY = 'runut:tampilkanGrafikPola';
 const NAMA_SAPAAN_KEY = 'runut:namaSapaan';
 const KATEGORI_TERSEMBUNYI_KEY = 'runut:kategoriTersembunyi';
 const TERVERIFIKASI_KEY = 'runut:terverifikasi';
+const PROMPT_INSTALL_DITUTUP_KEY = 'runut:promptInstallDitutup';
 
 export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
 const KATA_LAINNYA = 'lainnya';
@@ -170,6 +171,14 @@ export function setTerverifikasi(status: boolean): void {
   localStorage.setItem(TERVERIFIKASI_KEY, String(status));
 }
 
+export function ambilPromptInstallDitutup(): boolean {
+  return localStorage.getItem(PROMPT_INSTALL_DITUTUP_KEY) === 'true';
+}
+
+export function setPromptInstallDitutup(status: boolean): void {
+  localStorage.setItem(PROMPT_INSTALL_DITUTUP_KEY, String(status));
+}
+
 export function hapusSemuaData(): void {
   localStorage.removeItem(KEPUTUSAN_KEY);
   localStorage.removeItem(ONBOARDING_SELESAI_KEY);
@@ -178,4 +187,5 @@ export function hapusSemuaData(): void {
   localStorage.removeItem(NAMA_SAPAAN_KEY);
   localStorage.removeItem(KATEGORI_TERSEMBUNYI_KEY);
   localStorage.removeItem(TERVERIFIKASI_KEY);
+  localStorage.removeItem(PROMPT_INSTALL_DITUTUP_KEY);
 }

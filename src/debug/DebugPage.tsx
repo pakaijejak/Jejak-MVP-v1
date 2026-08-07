@@ -6,11 +6,13 @@ import { hitungSkorKalibrasi } from '../lib/kalibrasi'
 import {
   ambilOnboardingSelesai,
   ambilOptInStatus,
+  ambilPromptInstallDitutup,
   ambilSemuaKeputusan,
   ambilTerverifikasi,
   hapusSemuaData,
   setOnboardingSelesai,
   setOptInStatus,
+  setPromptInstallDitutup,
   setTerverifikasi,
   tambahKeputusan,
   tambahKeputusanBanyak,
@@ -160,6 +162,7 @@ function DebugPage() {
   const [onboardingSelesai, setOnboardingSelesaiState] = useState(() => ambilOnboardingSelesai())
   const [optInStatus, setOptInStatusState] = useState(() => ambilOptInStatus())
   const [terverifikasi, setTerverifikasiState] = useState(() => ambilTerverifikasi())
+  const [promptInstallDitutup, setPromptInstallDitutupState] = useState(() => ambilPromptInstallDitutup())
 
   function refresh() {
     setSemua(ambilSemuaKeputusan())
@@ -181,6 +184,7 @@ function DebugPage() {
     setOnboardingSelesaiState(ambilOnboardingSelesai())
     setOptInStatusState(ambilOptInStatus())
     setTerverifikasiState(ambilTerverifikasi())
+    setPromptInstallDitutupState(ambilPromptInstallDitutup())
   }
 
   function handleToggleOnboarding() {
@@ -193,6 +197,12 @@ function DebugPage() {
     const next = !terverifikasi
     setTerverifikasi(next)
     setTerverifikasiState(next)
+  }
+
+  function handleTogglePromptInstall() {
+    const next = !promptInstallDitutup
+    setPromptInstallDitutup(next)
+    setPromptInstallDitutupState(next)
   }
 
   function handleCycleOptIn() {
@@ -227,6 +237,12 @@ function DebugPage() {
       <p>
         onboardingSelesai: {String(onboardingSelesai)}{' '}
         <button type="button" onClick={handleToggleOnboarding}>
+          Toggle
+        </button>
+      </p>
+      <p>
+        promptInstallDitutup: {String(promptInstallDitutup)}{' '}
+        <button type="button" onClick={handleTogglePromptInstall}>
           Toggle
         </button>
       </p>

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import Button from '../components/Button'
+import PanduanInstalasi from '../components/PanduanInstalasi'
 import Screen from '../components/Screen'
 import { cocokkanKodeAkses } from '../lib/aksesGerbang'
+import { apakahModeStandalone } from '../lib/pwa'
 import { textInputStyle } from '../styles/formStyles'
 
 // TODO ganti sebelum deploy final: ini placeholder, belum link produk Lynk asli.
@@ -15,6 +17,7 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
   const [kode, setKode] = useState('')
   const [error, setError] = useState(false)
   const [memeriksa, setMemeriksa] = useState(false)
+  const [standalone] = useState(() => apakahModeStandalone())
 
   async function handleBuka() {
     setMemeriksa(true)
@@ -56,6 +59,29 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
       <Button variant="primary" onClick={handleBuka} disabled={!kode.trim() || memeriksa}>
         Buka
       </Button>
+
+      {!standalone && (
+        <PanduanInstalasi
+          trigger={(buka) => (
+            <button
+              type="button"
+              onClick={buka}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--color-ink-muted)',
+                fontSize: '0.85rem',
+                textAlign: 'center',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                padding: 0,
+              }}
+            >
+              📲 Cara install ke HP
+            </button>
+          )}
+        />
+      )}
 
       <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-ink-muted)', textAlign: 'center' }}>
         Belum beli?{' '}

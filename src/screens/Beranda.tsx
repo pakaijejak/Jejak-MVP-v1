@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import Button from '../components/Button'
+import PanduanInstalasi from '../components/PanduanInstalasi'
 import Screen from '../components/Screen'
-import { ambilKeputusanPending, ambilNamaSapaan, setNamaSapaan } from '../lib/storage'
+import { apakahModeStandalone } from '../lib/pwa'
+import {
+  ambilKeputusanPending,
+  ambilNamaSapaan,
+  ambilPromptInstallDitutup,
+  setNamaSapaan,
+  setPromptInstallDitutup,
+} from '../lib/storage'
+import { nudgeCardStyle } from '../styles/formStyles'
 import EditNamaSapaan from './EditNamaSapaan'
 
 interface BerandaProps {
@@ -13,6 +22,14 @@ interface BerandaProps {
 function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: BerandaProps) {
   const [pending] = useState(() => ambilKeputusanPending())
   const [namaSapaan, setNamaSapaanState] = useState(() => ambilNamaSapaan())
+  const [tampilkanPromptInstall, setTampilkanPromptInstall] = useState(
+    () => !apakahModeStandalone() && !ambilPromptInstallDitutup(),
+  )
+
+  function tutupPromptInstall() {
+    setPromptInstallDitutup(true)
+    setTampilkanPromptInstall(false)
+  }
 
   return (
     <Screen>
@@ -30,6 +47,46 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: Beran
           />
         </div>
       </div>
+
+      {tampilkanPromptInstall && (
+        <div style={nudgeCardStyle}>
+          <p style={{ margin: 0 }}>💡 Biar gampang dibuka lagi, install Runut ke HP kamu.</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ flex: 1 }}>
+              <PanduanInstalasi
+                trigger={(buka) => (
+                  <Button variant="secondary" onClick={buka}>
+                    Lihat Caranya
+                  </Button>
+                )}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={tutupPromptInstall}
+              aria-label="Tutup ajakan install"
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                border: '1.5px solid var(--color-ink-muted)',
+                background: 'transparent',
+                color: 'var(--color-ink-muted)',
+                fontSize: '1rem',
+                lineHeight: 1,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                fontFamily: 'inherit',
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
 
       {pending.length > 0 && (
         <div
