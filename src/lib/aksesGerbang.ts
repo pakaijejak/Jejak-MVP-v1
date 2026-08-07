@@ -1,6 +1,6 @@
 // Gerbang kode akses — dicocokkan lewat hash, bukan teks polos.
 //
-// Kode aktif saat ini adalah kode SEMENTARA untuk testing: "JEJAKTEST".
+// Kode aktif saat ini adalah kode SEMENTARA untuk testing: "RUNUTTEST".
 //
 // CARA MENGGANTI KE KODE ASLI (lakukan sebelum jual ke publik):
 // 1. Tentukan kode akses final.
@@ -11,7 +11,7 @@
 //      console.log([...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join(''));
 // 3. Ganti nilai HASH_KODE_AKSES di bawah dengan hasil hash tadi.
 
-export const HASH_KODE_AKSES = '89fa0c2391ac84357eab428ec0d3d6994445c99d8333816ee1fda6d5273e9981'; // hash dari "JEJAKTEST"
+export const HASH_KODE_AKSES = 'c8730ec796a09a329c29149cb5c2fa69d80d388a087b208ffaf0bdff94b0a4ad'; // hash dari "RUNUTTEST"
 
 async function hitungHashSha256(teks: string): Promise<string> {
   const data = new TextEncoder().encode(teks);

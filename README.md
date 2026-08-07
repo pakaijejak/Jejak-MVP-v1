@@ -1,4 +1,4 @@
-# Jejak
+# Runut
 
 Progressive Web App untuk refleksi & pengambilan keputusan berbasis metakognisi.
 

@@ -1,12 +1,12 @@
 import type { Keputusan, OptInStatus } from '../types/keputusan';
 
-const KEPUTUSAN_KEY = 'jejak:keputusan';
-const ONBOARDING_SELESAI_KEY = 'jejak:onboardingSelesai';
-const OPT_IN_STATUS_KEY = 'jejak:optInStatus';
-const TAMPILKAN_GRAFIK_POLA_KEY = 'jejak:tampilkanGrafikPola';
-const NAMA_SAPAAN_KEY = 'jejak:namaSapaan';
-const KATEGORI_TERSEMBUNYI_KEY = 'jejak:kategoriTersembunyi';
-const TERVERIFIKASI_KEY = 'jejak:terverifikasi';
+const KEPUTUSAN_KEY = 'runut:keputusan';
+const ONBOARDING_SELESAI_KEY = 'runut:onboardingSelesai';
+const OPT_IN_STATUS_KEY = 'runut:optInStatus';
+const TAMPILKAN_GRAFIK_POLA_KEY = 'runut:tampilkanGrafikPola';
+const NAMA_SAPAAN_KEY = 'runut:namaSapaan';
+const KATEGORI_TERSEMBUNYI_KEY = 'runut:kategoriTersembunyi';
+const TERVERIFIKASI_KEY = 'runut:terverifikasi';
 
 export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
 const KATA_LAINNYA = 'lainnya';
