@@ -21,7 +21,7 @@ interface RiwayatPolaProps {
 }
 
 function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
-  const [semua] = useState(() => ambilSemuaKeputusan())
+  const [semua, setSemua] = useState(() => ambilSemuaKeputusan())
   const [kategoriCustom] = useState(() => ambilKategoriCustom())
   const [filter, setFilter] = useState<FilterKategori>('Semua')
   const [tampilkanGrafik, setTampilkanGrafikState] = useState(() => ambilTampilkanGrafikPola())
@@ -42,7 +42,15 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
   if (idDetail) {
     const detail = semua.find((k) => k.id === idDetail)
     if (detail) {
-      return <DetailKeputusan keputusan={detail} onKembali={() => setIdDetail(null)} />
+      return (
+        <DetailKeputusan
+          keputusan={detail}
+          onKembali={() => setIdDetail(null)}
+          onUpdateKeputusan={(updated) =>
+            setSemua((prev) => prev.map((k) => (k.id === updated.id ? updated : k)))
+          }
+        />
+      )
     }
   }
 

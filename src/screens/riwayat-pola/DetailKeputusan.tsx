@@ -1,7 +1,9 @@
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import Button from '../../components/Button'
 import Screen from '../../components/Screen'
 import { KALIMAT_GAP_KALIBRASI, KALIMAT_REASSURANCE_KALIBRASI } from '../../lib/kalibrasi'
+import { updateKeputusan } from '../../lib/storage'
+import { textInputStyle } from '../../styles/formStyles'
 import type { Keputusan } from '../../types/keputusan'
 
 const sectionTitleStyle: CSSProperties = {
@@ -33,16 +35,110 @@ function Field({ label, value }: { label: string; value: string }) {
   )
 }
 
+const editLinkStyle: CSSProperties = {
+  background: 'none',
+  border: 'none',
+  color: 'var(--color-accent)',
+  fontSize: '0.85rem',
+  fontWeight: 600,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  whiteSpace: 'nowrap',
+  padding: 0,
+}
+
+function FieldRefleksi({
+  label,
+  value,
+  onSimpan,
+}: {
+  label: string
+  value: string
+  onSimpan: (nilaiBaru: string) => void
+}) {
+  const [mode, setMode] = useState<'lihat' | 'edit'>('lihat')
+  const [draft, setDraft] = useState(value)
+
+  function mulaiEdit() {
+    setDraft(value)
+    setMode('edit')
+  }
+
+  function simpan() {
+    onSimpan(draft.trim())
+    setMode('lihat')
+  }
+
+  function batal() {
+    setDraft(value)
+    setMode('lihat')
+  }
+
+  if (mode === 'edit') {
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <p style={fieldLabelStyle}>{label}</p>
+        <textarea
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          rows={3}
+          style={{ ...textInputStyle, resize: 'vertical' }}
+          autoFocus
+        />
+        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+          <div style={{ flex: 1 }}>
+            <Button variant="secondary" onClick={batal}>
+              Batal
+            </Button>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Button variant="primary" onClick={simpan}>
+              Simpan
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <p style={fieldLabelStyle}>{label}</p>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+        {value ? (
+          <p style={{ ...fieldValueStyle, margin: 0 }}>{value}</p>
+        ) : (
+          <p style={{ margin: 0, color: 'var(--color-ink-muted)' }}>Belum diisi</p>
+        )}
+        <button type="button" onClick={mulaiEdit} style={editLinkStyle}>
+          {value ? 'Edit' : '+ Isi sekarang'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 interface DetailKeputusanProps {
   keputusan: Keputusan
   onKembali: () => void
+  onUpdateKeputusan: (updated: Keputusan) => void
 }
 
-function DetailKeputusan({ keputusan, onKembali }: DetailKeputusanProps) {
+function DetailKeputusan({ keputusan, onKembali, onUpdateKeputusan }: DetailKeputusanProps) {
   const opsiTerpilih = keputusan.opsi[keputusan.opsiTerpilihIndex]?.teks ?? '-'
   const skorKalibrasi = keputusan.skorKalibrasi
   const kalimatGap = skorKalibrasi ? KALIMAT_GAP_KALIBRASI[skorKalibrasi] : undefined
   const kalimatReassurance = skorKalibrasi ? KALIMAT_REASSURANCE_KALIBRASI[skorKalibrasi] : undefined
+
+  function simpanRefleksi(partial: Partial<NonNullable<Keputusan['refleksi']>>) {
+    if (!keputusan.refleksi) return
+    const updated = updateKeputusan(keputusan.id, {
+      refleksi: { ...keputusan.refleksi, ...partial },
+    })
+    if (updated) {
+      onUpdateKeputusan(updated)
+    }
+  }
 
   return (
     <Screen>
@@ -120,19 +216,31 @@ function DetailKeputusan({ keputusan, onKembali }: DetailKeputusanProps) {
         {keputusan.catatanHasil && <Field label="Catatan hasil" value={keputusan.catatanHasil} />}
         {keputusan.refleksi && (
           <>
-            <Field
+            <FieldRefleksi
               label="Apa yang bikin hasilnya seperti ini?"
-              value={keputusan.refleksi.apaYangBikinBegini || '-'}
+              value={keputusan.refleksi.apaYangBikinBegini}
+              onSimpan={(v) => simpanRefleksi({ apaYangBikinBegini: v })}
             />
-            <Field
+            <FieldRefleksi
               label="Bagian yang menolong / kurang"
-              value={keputusan.refleksi.prosesYangMembantuAtauKurang || '-'}
+              value={keputusan.refleksi.prosesYangMembantuAtauKurang}
+              onSimpan={(v) => simpanRefleksi({ prosesYangMembantuAtauKurang: v })}
             />
-            <Field label="Perasaan sekarang" value={keputusan.refleksi.perasaanSekarang || '-'} />
-            <Field label="Hal yang mau dilakukan beda" value={keputusan.refleksi.halYangBedaKedepan || '-'} />
-            {keputusan.refleksi.metaRefleksi && (
-              <Field label="Pertanyaan paling susah dijawab" value={keputusan.refleksi.metaRefleksi} />
-            )}
+            <FieldRefleksi
+              label="Perasaan sekarang"
+              value={keputusan.refleksi.perasaanSekarang}
+              onSimpan={(v) => simpanRefleksi({ perasaanSekarang: v })}
+            />
+            <FieldRefleksi
+              label="Hal yang mau dilakukan beda"
+              value={keputusan.refleksi.halYangBedaKedepan}
+              onSimpan={(v) => simpanRefleksi({ halYangBedaKedepan: v })}
+            />
+            <FieldRefleksi
+              label="Pertanyaan paling susah dijawab"
+              value={keputusan.refleksi.metaRefleksi ?? ''}
+              onSimpan={(v) => simpanRefleksi({ metaRefleksi: v || undefined })}
+            />
           </>
         )}
       </section>
