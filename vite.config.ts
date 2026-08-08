@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon-192.png', 'icon-512.png', 'icon-maskable-512.png'],
       manifest: {
-        name: 'Runut',
-        short_name: 'Runut',
-        description: 'Runut — refleksi & pengambilan keputusan berbasis metakognisi',
+        name: 'Runtut',
+        short_name: 'Runtut',
+        description: 'Runtut — refleksi & pengambilan keputusan berbasis metakognisi',
         display: 'standalone',
         theme_color: '#2B3A42',
         background_color: '#F7F2E9',

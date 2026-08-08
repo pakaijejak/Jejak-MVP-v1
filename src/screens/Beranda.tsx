@@ -50,7 +50,7 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: Beran
 
       {tampilkanPromptInstall && (
         <div style={nudgeCardStyle}>
-          <p style={{ margin: 0 }}>💡 Biar gampang dibuka lagi, install Runut ke HP kamu.</p>
+          <p style={{ margin: 0 }}>💡 Biar gampang dibuka lagi, install Runtut ke HP kamu.</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ flex: 1 }}>
               <PanduanInstalasi

@@ -1,4 +1,4 @@
-# Runut
+# Runtut
 
 Progressive Web App untuk refleksi & pengambilan keputusan berbasis metakognisi.
 

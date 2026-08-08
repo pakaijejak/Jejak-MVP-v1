@@ -34,7 +34,7 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
 
   return (
     <Screen>
-      <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Runut</h1>
+      <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Runtut</h1>
 
       <p style={{ margin: 0, lineHeight: 1.5 }}>Masukkan kode akses yang kamu terima saat pembelian.</p>
 
