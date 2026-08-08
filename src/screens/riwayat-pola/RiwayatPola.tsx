@@ -95,7 +95,20 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
       </ChipRow>
 
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 10,
+            background: 'var(--color-surface)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+            paddingTop: 12,
+            paddingBottom: 12,
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: '0.8rem', color: 'var(--color-ink-muted)' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
               <span
@@ -129,23 +142,23 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
           </button>
         </div>
         {tampilkanGrafik && <GrafikKalibrasi data={terfilter} />}
-      </div>
 
-      <div>
-        <p style={{ margin: '0 0 12px', fontWeight: 600 }}>Daftar keputusan</p>
-        {terfilter.length === 0 ? (
-          <p style={{ color: 'var(--color-ink-muted)' }}>Belum ada keputusan di kategori ini.</p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {terfilter.map((k) => (
-              <KartuRiwayat
-                key={k.id}
-                keputusan={k}
-                onTap={k.status === 'menunggu_direview' ? () => onPilihPending(k.id) : () => setIdDetail(k.id)}
-              />
-            ))}
-          </div>
-        )}
+        <div style={{ marginTop: 16 }}>
+          <p style={{ margin: '0 0 12px', fontWeight: 600 }}>Daftar keputusan</p>
+          {terfilter.length === 0 ? (
+            <p style={{ color: 'var(--color-ink-muted)' }}>Belum ada keputusan di kategori ini.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {terfilter.map((k) => (
+                <KartuRiwayat
+                  key={k.id}
+                  keputusan={k}
+                  onTap={k.status === 'menunggu_direview' ? () => onPilihPending(k.id) : () => setIdDetail(k.id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </Screen>
   )
