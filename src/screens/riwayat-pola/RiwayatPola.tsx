@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import Button from '../../components/Button'
 import Chip from '../../components/Chip'
 import ChipRow from '../../components/ChipRow'
 import Screen from '../../components/Screen'
@@ -9,11 +10,14 @@ import {
   ambilTampilkanGrafikPola,
   setTampilkanGrafikPola,
 } from '../../lib/storage'
+import CadangkanData from './CadangkanData'
 import DetailKeputusan from './DetailKeputusan'
 import GrafikKalibrasi from './GrafikKalibrasi'
 import KartuRiwayat from './KartuRiwayat'
+import PulihkanData from './PulihkanData'
 
 type FilterKategori = 'Semua' | string
+type SubLayar = 'daftar' | 'cadangkan' | 'pulihkan'
 
 interface RiwayatPolaProps {
   onKembali: () => void
@@ -26,6 +30,7 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
   const [filter, setFilter] = useState<FilterKategori>('Semua')
   const [tampilkanGrafik, setTampilkanGrafikState] = useState(() => ambilTampilkanGrafikPola())
   const [idDetail, setIdDetail] = useState<string | null>(null)
+  const [subLayar, setSubLayar] = useState<SubLayar>('daftar')
 
   const terfilter = useMemo(() => {
     const hasil =
@@ -54,6 +59,14 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
     }
   }
 
+  if (subLayar === 'cadangkan') {
+    return <CadangkanData onKembali={() => setSubLayar('daftar')} />
+  }
+
+  if (subLayar === 'pulihkan') {
+    return <PulihkanData onKembali={() => setSubLayar('daftar')} onSelesai={onKembali} />
+  }
+
   return (
     <Screen>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -77,10 +90,47 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
         <h1 style={{ margin: 0, fontSize: '1.3rem' }}>Riwayat &amp; Pola</h1>
       </div>
 
-      <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
-        Riwayat ini bukan rapor buat menilai kamu. Ini buat bantu kamu liat pola cara berpikirmu dari waktu ke
-        waktu.
-      </p>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ flex: 1 }}>
+          <Button variant="secondary" onClick={() => setSubLayar('cadangkan')}>
+            Cadangkan Data
+          </Button>
+        </div>
+        <div style={{ flex: 1 }}>
+          <Button variant="secondary" onClick={() => setSubLayar('pulihkan')}>
+            Pulihkan Data
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
+          Riwayat ini bukan rapor buat menilai kamu. Ini buat bantu kamu liat pola cara berpikirmu dari waktu ke
+          waktu.
+        </p>
+        <p style={{ margin: '8px 0 0', color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
+          ⚠️ Data ini cuma tersimpan di HP kamu. Install ulang app atau hapus data browser bisa menghilangkan
+          riwayat ini.{' '}
+          <button
+            type="button"
+            onClick={() => setSubLayar('cadangkan')}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              color: 'var(--color-accent)',
+              fontWeight: 600,
+              fontSize: 'inherit',
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
+          >
+            Cadangkan Data
+          </button>{' '}
+          sekarang biar aman.
+        </p>
+      </div>
 
       <ChipRow>
         <Chip label="Semua" selected={filter === 'Semua'} onClick={() => setFilter('Semua')} />
