@@ -17,9 +17,10 @@ interface BerandaProps {
   onMulaiKeputusanBaru: () => void
   onRiwayatPola: () => void
   onLihatCekHasil: () => void
+  onBantuanMasukan: () => void
 }
 
-function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: BerandaProps) {
+function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantuanMasukan }: BerandaProps) {
   const [pending] = useState(() => ambilKeputusanPending())
   const [namaSapaan, setNamaSapaanState] = useState(() => ambilNamaSapaan())
   const [tampilkanPromptInstall, setTampilkanPromptInstall] = useState(
@@ -115,6 +116,24 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil }: Beran
           Riwayat &amp; Pola
         </Button>
       </div>
+
+      <button
+        type="button"
+        onClick={onBantuanMasukan}
+        style={{
+          background: 'none',
+          border: 'none',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          color: 'var(--color-accent)',
+          cursor: 'pointer',
+          padding: 0,
+          fontFamily: 'inherit',
+          textAlign: 'left',
+        }}
+      >
+        Butuh bantuan atau punya masukan?
+      </button>
     </Screen>
   )
 }

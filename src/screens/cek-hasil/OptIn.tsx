@@ -2,8 +2,7 @@ import Button from '../../components/Button'
 import Screen from '../../components/Screen'
 import type { OptInStatus } from '../../types/keputusan'
 
-// TODO ganti sebelum deploy final: ini placeholder, belum link Google Form asli.
-const GOOGLE_FORM_URL = 'TODO_GANTI_DENGAN_LINK_FORM_ASLI'
+const GOOGLE_FORM_URL = 'https://forms.gle/c9SUqwi4Uc7ApKeo9'
 
 interface OptInProps {
   onPilih: (status: OptInStatus) => void

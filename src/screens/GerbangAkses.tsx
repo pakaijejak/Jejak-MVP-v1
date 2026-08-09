@@ -6,8 +6,7 @@ import { cocokkanKodeAkses } from '../lib/aksesGerbang'
 import { apakahModeStandalone } from '../lib/pwa'
 import { textInputStyle } from '../styles/formStyles'
 
-// TODO ganti sebelum deploy final: ini placeholder, belum link produk Lynk asli.
-const LINK_BELI_LYNK = 'TODO_GANTI_DENGAN_LINK_PRODUK_LYNK_ASLI'
+const LINK_BELI_LYNK = 'https://lynk.id/runtut'
 
 interface GerbangAksesProps {
   onTerverifikasi: () => void

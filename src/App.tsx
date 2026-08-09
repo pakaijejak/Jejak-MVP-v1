@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import DebugPage from './debug/DebugPage'
 import { ambilOnboardingSelesai, ambilTerverifikasi, setOnboardingSelesai, setTerverifikasi } from './lib/storage'
+import BantuanMasukan from './screens/BantuanMasukan'
 import Beranda from './screens/Beranda'
 import CekHasilFlow from './screens/cek-hasil/CekHasilFlow'
 import GerbangAkses from './screens/GerbangAkses'
@@ -18,6 +19,7 @@ type Layar =
   | 'riwayat-pola'
   | 'lihat-cek-hasil'
   | 'cek-hasil-detail'
+  | 'bantuan-masukan'
 
 type AsalCekHasil = 'lihat-cek-hasil' | 'riwayat-pola'
 
@@ -55,8 +57,11 @@ function MainApp() {
           onMulaiKeputusanBaru={() => setLayar('mulai-keputusan')}
           onRiwayatPola={() => setLayar('riwayat-pola')}
           onLihatCekHasil={() => setLayar('lihat-cek-hasil')}
+          onBantuanMasukan={() => setLayar('bantuan-masukan')}
         />
       )
+    case 'bantuan-masukan':
+      return <BantuanMasukan onKembali={() => setLayar('beranda')} />
     case 'mulai-keputusan':
       return (
         <MulaiKeputusanBaru
