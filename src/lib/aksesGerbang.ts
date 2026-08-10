@@ -1,8 +1,8 @@
 // Gerbang kode akses — dicocokkan lewat hash, bukan teks polos.
 //
 // Kode aktif saat ini ada dua, cocok salah satu sudah dianggap benar:
-// - "RUNUTPIKIR": kode utama untuk pembeli.
-// - "RUNUTTES": kode SEMENTARA untuk keperluan testing internal.
+// - "RUNTUTPIKIR": kode utama untuk pembeli.
+// - "RUNTUTTES": kode SEMENTARA untuk keperluan testing internal.
 //   Cabut entri ini (hapus dari array di bawah) sebelum rilis final ke pembeli sungguhan.
 //
 // CARA MENAMBAH / MENGGANTI KODE:
@@ -16,8 +16,8 @@
 // 3. Tambah/ganti nilainya di array HASH_KODE_AKSES_VALID di bawah.
 
 export const HASH_KODE_AKSES_VALID = [
-  'cfaa3ae4f352e0171c7c00bd15a47e095e17c38d17f2cd7e8e03a366e69e513a', // hash dari "RUNUTPIKIR"
-  'da7aa8628eb29cd82a4f3487a1726fde923a96a53f3394a4ef644fb594e6657a', // hash dari "RUNUTTES" (sementara, testing)
+  '81df67915933a0c017400905bde7b1b675568ced3aecf6b8318e61985e8318b4', // hash dari "RUNTUTPIKIR"
+  'ad103e5436b5c2ecc9761557f2198bf22734256d0eb7884bc0a89ca9cc61bf74', // hash dari "RUNTUTTES" (sementara, testing)
 ]
 
 async function hitungHashSha256(teks: string): Promise<string> {
