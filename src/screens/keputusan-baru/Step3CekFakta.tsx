@@ -86,7 +86,7 @@ function Step3CekFakta({ draft, onUpdate, onLanjut, onKembali }: Step3Props) {
               </Button>
             </div>
             <div style={{ flex: 1 }}>
-              <Button variant="primary" onClick={onLanjut}>
+              <Button variant="secondary" onClick={onLanjut}>
                 Lanjut saja
               </Button>
             </div>

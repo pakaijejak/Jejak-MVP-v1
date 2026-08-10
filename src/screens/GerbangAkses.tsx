@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '../components/Button'
+import Logo from '../components/Logo'
 import PanduanInstalasi from '../components/PanduanInstalasi'
 import Screen from '../components/Screen'
 import { cocokkanKodeAkses } from '../lib/aksesGerbang'
@@ -33,7 +34,10 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
 
   return (
     <Screen>
-      <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Runtut</h1>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <Logo lebarTerlebar={26} tinggiGaris={4} jarakGaris={2} />
+        <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 500 }}>Runtut</h1>
+      </div>
 
       <p style={{ margin: 0, lineHeight: 1.5 }}>Masukkan kode akses yang kamu terima saat pembelian.</p>
 

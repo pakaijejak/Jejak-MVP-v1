@@ -22,7 +22,7 @@ function Onboarding({ onCobaSekarang, onLewati }: OnboardingProps) {
         <Button variant="primary" onClick={onCobaSekarang}>
           Coba Sekarang
         </Button>
-        <Button variant="text" onClick={onLewati}>
+        <Button variant="secondary" onClick={onLewati}>
           Lewati, langsung ke keputusan saya
         </Button>
       </div>

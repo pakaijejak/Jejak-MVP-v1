@@ -6,35 +6,17 @@ const LABEL_STATUS: Record<Keputusan['status'], string> = {
   sudah_direview: 'Sudah Dicek',
 }
 
-const tagStyle: CSSProperties = {
-  fontSize: '0.8rem',
-  color: 'var(--color-ink-muted)',
-  border: '1px solid var(--color-ink-muted)',
-  borderRadius: 999,
-  padding: '2px 10px',
-}
-
-const kontainerStyle: CSSProperties = {
-  display: 'block',
-  width: '100%',
-  textAlign: 'left',
-  border: '1px solid var(--color-ink-muted)',
-  borderRadius: 12,
-  padding: 16,
-  background: 'transparent',
-  color: 'var(--color-ink)',
-  fontFamily: 'inherit',
-  fontSize: '1rem',
-  cursor: 'pointer',
-}
-
 function potongMasalah(teks: string): string {
   if (teks.length <= 50) return teks
   return `${teks.slice(0, 50).trimEnd()}…`
 }
 
-function formatTanggal(iso: string): string {
-  return new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+function formatHari(iso: string): string {
+  return new Date(iso).toLocaleDateString('id-ID', { day: '2-digit' })
+}
+
+function formatBulanSingkat(iso: string): string {
+  return new Date(iso).toLocaleDateString('id-ID', { month: 'short' }).slice(0, 3).toUpperCase()
 }
 
 function MiniVisualisasi({ keyakinanAwal, hasilPersen }: { keyakinanAwal: number; hasilPersen: number }) {
@@ -42,7 +24,7 @@ function MiniVisualisasi({ keyakinanAwal, hasilPersen }: { keyakinanAwal: number
     <svg
       viewBox="0 0 100 16"
       preserveAspectRatio="none"
-      style={{ width: '100%', height: 16, display: 'block', marginTop: 10 }}
+      style={{ width: '100%', height: 16, display: 'block', marginTop: 8 }}
       aria-hidden="true"
     >
       <line x1={0} y1={8} x2={100} y2={8} stroke="var(--color-ink-muted)" strokeWidth={1} />
@@ -52,26 +34,82 @@ function MiniVisualisasi({ keyakinanAwal, hasilPersen }: { keyakinanAwal: number
   )
 }
 
+function IkonCentang() {
+  return (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" role="img" aria-label="Sudah Dicek">
+      <path
+        d="M5 13l4 4L19 7"
+        stroke="var(--color-ink-muted)"
+        strokeWidth={2.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IkonJam() {
+  return (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" role="img" aria-label="Menunggu Direview">
+      <circle cx="12" cy="12" r="9" stroke="var(--color-ink-muted)" strokeWidth={2} />
+      <path d="M12 7v5l3.5 2" stroke="var(--color-ink-muted)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 interface KartuRiwayatProps {
   keputusan: Keputusan
   onTap: () => void
+  tanpaGarisBawah?: boolean
 }
 
-function KartuRiwayat({ keputusan, onTap }: KartuRiwayatProps) {
+function KartuRiwayat({ keputusan, onTap, tanpaGarisBawah }: KartuRiwayatProps) {
+  const kontainerStyle: CSSProperties = {
+    display: 'block',
+    width: '100%',
+    textAlign: 'left',
+    border: 'none',
+    borderBottom: tanpaGarisBawah ? 'none' : '0.5px solid var(--color-hairline)',
+    padding: '14px 0',
+    background: 'transparent',
+    color: 'var(--color-ink)',
+    fontFamily: 'inherit',
+    fontSize: '1rem',
+    cursor: 'pointer',
+  }
+
   return (
-    <button type="button" onClick={onTap} style={kontainerStyle}>
-      <p style={{ margin: 0, fontWeight: 600 }}>{potongMasalah(keputusan.masalah)}</p>
+    <button type="button" onClick={onTap} style={kontainerStyle} aria-label={LABEL_STATUS[keputusan.status]}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+        <div style={{ width: 32, flexShrink: 0, textAlign: 'center' }}>
+          <div style={{ fontSize: '1.2rem', fontWeight: 500, color: 'var(--color-ink)', lineHeight: 1.1 }}>
+            {formatHari(keputusan.createdAt)}
+          </div>
+          <div
+            style={{
+              fontSize: '0.65rem',
+              fontWeight: 600,
+              color: 'var(--color-ink-muted)',
+              letterSpacing: '0.03em',
+              marginTop: 2,
+            }}
+          >
+            {formatBulanSingkat(keputusan.createdAt)}
+          </div>
+        </div>
 
-      {keputusan.status === 'sudah_direview' && keputusan.hasilPersen !== undefined && (
-        <MiniVisualisasi keyakinanAwal={keputusan.keyakinanAwal} hasilPersen={keputusan.hasilPersen} />
-      )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ margin: 0, fontStyle: 'italic' }}>{potongMasalah(keputusan.masalah)}</p>
+          <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--color-accent)' }}>{keputusan.kategori}</p>
 
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        <span style={tagStyle}>{formatTanggal(keputusan.createdAt)}</span>
-        <span style={tagStyle}>{keputusan.kategori}</span>
-      </div>
-      <div style={{ marginTop: 8 }}>
-        <span style={tagStyle}>{LABEL_STATUS[keputusan.status]}</span>
+          {keputusan.status === 'sudah_direview' && keputusan.hasilPersen !== undefined && (
+            <MiniVisualisasi keyakinanAwal={keputusan.keyakinanAwal} hasilPersen={keputusan.hasilPersen} />
+          )}
+        </div>
+
+        <div style={{ flexShrink: 0, paddingTop: 2 }}>
+          {keputusan.status === 'sudah_direview' ? <IkonCentang /> : <IkonJam />}
+        </div>
       </div>
     </button>
   )

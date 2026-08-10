@@ -1,5 +1,7 @@
 :root {
   --color-surface: #f7f2e9;
+  --color-surface-raised: #efe9db;
+  --color-hairline: #e5dfd0;
   --color-ink: #2b3a42;
   --color-ink-muted: #5c6b74;
   --color-accent: #c1793f;

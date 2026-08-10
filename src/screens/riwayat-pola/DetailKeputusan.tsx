@@ -76,7 +76,7 @@ function FieldRefleksi({
 
   if (mode === 'edit') {
     return (
-      <div style={{ marginBottom: 12 }}>
+      <div style={{ marginBottom: 12, background: 'var(--color-surface-raised)', borderRadius: 12, padding: 12 }}>
         <p style={fieldLabelStyle}>{label}</p>
         <textarea
           value={draft}
@@ -101,17 +101,27 @@ function FieldRefleksi({
     )
   }
 
+  if (!value) {
+    return (
+      <div style={{ marginBottom: 12, background: 'var(--color-surface-raised)', borderRadius: 12, padding: 12 }}>
+        <p style={fieldLabelStyle}>{label}</p>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+          <p style={{ margin: 0, color: 'var(--color-ink-muted)' }}>Belum diisi</p>
+          <button type="button" onClick={mulaiEdit} style={editLinkStyle}>
+            + Isi sekarang
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ marginBottom: 12 }}>
       <p style={fieldLabelStyle}>{label}</p>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-        {value ? (
-          <p style={{ ...fieldValueStyle, margin: 0 }}>{value}</p>
-        ) : (
-          <p style={{ margin: 0, color: 'var(--color-ink-muted)' }}>Belum diisi</p>
-        )}
+        <p style={{ ...fieldValueStyle, margin: 0 }}>{value}</p>
         <button type="button" onClick={mulaiEdit} style={editLinkStyle}>
-          {value ? 'Edit' : '+ Isi sekarang'}
+          Edit
         </button>
       </div>
     </div>

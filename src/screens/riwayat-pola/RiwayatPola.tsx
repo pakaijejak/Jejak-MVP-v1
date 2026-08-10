@@ -235,12 +235,13 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
           {terfilter.length === 0 ? (
             <p style={{ color: 'var(--color-ink-muted)' }}>Belum ada keputusan di kategori ini.</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {terfilter.map((k) => (
+            <div>
+              {terfilter.map((k, index) => (
                 <KartuRiwayat
                   key={k.id}
                   keputusan={k}
                   onTap={k.status === 'menunggu_direview' ? () => onPilihPending(k.id) : () => setIdDetail(k.id)}
+                  tanpaGarisBawah={index === terfilter.length - 1}
                 />
               ))}
             </div>

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 
-type ButtonVariant = 'primary' | 'secondary' | 'text'
+type ButtonVariant = 'primary' | 'secondary'
 
 interface ButtonProps {
   children: ReactNode
@@ -29,12 +29,6 @@ const variantStyle: Record<ButtonVariant, CSSProperties> = {
     background: 'transparent',
     color: 'var(--color-ink)',
     border: '1.5px solid var(--color-ink)',
-  },
-  text: {
-    background: 'transparent',
-    color: 'var(--color-ink-muted)',
-    border: 'none',
-    fontWeight: 500,
   },
 }
 

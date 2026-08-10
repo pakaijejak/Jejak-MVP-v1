@@ -135,7 +135,7 @@ function Step1RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali }: Step1Pro
                 </Button>
               </div>
               <div style={{ flex: 1 }}>
-                <Button variant="primary" onClick={konfirmasiHapusKategori}>
+                <Button variant="secondary" onClick={konfirmasiHapusKategori}>
                   Ya
                 </Button>
               </div>

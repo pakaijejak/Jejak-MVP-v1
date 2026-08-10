@@ -27,7 +27,7 @@ function BottomSheet({ terbuka, onTutup, children }: BottomSheetProps) {
         style={{
           width: '100%',
           maxWidth: 480,
-          background: 'var(--color-surface)',
+          background: 'var(--color-surface-raised)',
           borderRadius: '20px 20px 0 0',
           padding: 24,
           boxSizing: 'border-box',

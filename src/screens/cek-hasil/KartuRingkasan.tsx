@@ -14,7 +14,16 @@ function KartuRingkasan({ keputusan, onSelesai }: KartuRingkasanProps) {
     <Screen>
       <p style={{ margin: 0, fontWeight: 600, fontSize: '1.1rem' }}>{keputusan.masalah}</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 16,
+          background: 'var(--color-surface-raised)',
+          borderRadius: 12,
+          padding: 16,
+        }}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-ink-muted)', fontSize: '0.8rem' }}>
             SEBELUM

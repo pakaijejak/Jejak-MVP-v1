@@ -20,7 +20,6 @@ export const textInputStyle: CSSProperties = {
 
 export const nudgeCardStyle: CSSProperties = {
   background: 'rgba(193, 121, 63, 0.12)',
-  border: '1px solid var(--color-accent)',
   borderRadius: 12,
   padding: 16,
   display: 'flex',

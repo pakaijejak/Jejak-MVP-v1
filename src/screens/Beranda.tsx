@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '../components/Button'
+import Logo from '../components/Logo'
 import PanduanInstalasi from '../components/PanduanInstalasi'
 import Screen from '../components/Screen'
 import { apakahModeStandalone } from '../lib/pwa'
@@ -34,6 +35,20 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantu
 
   return (
     <Screen>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <Logo lebarTerlebar={14} tinggiGaris={2.5} jarakGaris={1.5} />
+        <span
+          style={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            color: 'var(--color-ink-muted)',
+            letterSpacing: '0.08em',
+          }}
+        >
+          RUNTUT
+        </span>
+      </div>
+
       <div>
         <h1 style={{ margin: 0, fontSize: '1.5rem' }}>
           👋 Selamat datang lagi{namaSapaan ? `, ${namaSapaan}` : ''}!
@@ -102,7 +117,7 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantu
           <p style={{ margin: 0 }}>
             🔔 {pending.length} keputusan menunggu direview
           </p>
-          <Button variant="primary" onClick={onLihatCekHasil}>
+          <Button variant="secondary" onClick={onLihatCekHasil}>
             Lihat &amp; Cek Hasil
           </Button>
         </div>
