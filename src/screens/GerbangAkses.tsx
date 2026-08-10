@@ -35,7 +35,7 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
   return (
     <Screen>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-        <Logo lebarTerlebar={26} tinggiGaris={4} jarakGaris={2} />
+        <Logo lebarTerlebar={30} tinggiGaris={7} jarakGaris={6} />
         <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 500 }}>Runtut</h1>
       </div>
 

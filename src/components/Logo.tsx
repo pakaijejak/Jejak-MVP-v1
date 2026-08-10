@@ -1,6 +1,6 @@
-// Lockup 5 garis menyempit ke tengah — proporsi lebar relatif terhadap garis
-// terlebar: 100% - 80% - 60% - 80% - 100%, sudut membulat di tiap ujung garis.
-const PROPORSI_LEBAR = [1, 0.8, 0.6, 0.8, 1]
+// Lockup 3 garis menyempit ke tengah — proporsi lebar relatif terhadap garis
+// terlebar: 100% - 59% - 100%, sudut membulat di tiap ujung garis.
+const PROPORSI_LEBAR = [1, 0.59, 1]
 
 interface LogoProps {
   lebarTerlebar: number

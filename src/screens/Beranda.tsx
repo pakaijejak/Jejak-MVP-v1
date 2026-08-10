@@ -36,7 +36,7 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantu
   return (
     <Screen>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <Logo lebarTerlebar={14} tinggiGaris={2.5} jarakGaris={1.5} />
+        <Logo lebarTerlebar={16} tinggiGaris={4} jarakGaris={3} />
         <span
           style={{
             fontSize: '0.75rem',
