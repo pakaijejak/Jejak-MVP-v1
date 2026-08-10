@@ -50,7 +50,7 @@ function MainApp() {
         />
       )
     case 'onboarding-contoh':
-      return <OnboardingContoh onLanjut={selesaikanOnboarding} />
+      return <OnboardingContoh onLanjut={selesaikanOnboarding} onBatal={() => setLayar('onboarding')} />
     case 'beranda':
       return (
         <Beranda
