@@ -97,6 +97,12 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
           Beli di sini
         </a>
       </p>
+
+      <p style={{ margin: 0, textAlign: 'center' }}>
+        <a href="/privasi" style={{ fontSize: '0.8rem', color: 'var(--color-ink-muted)' }}>
+          Kebijakan Privasi
+        </a>
+      </p>
     </Screen>
   )
 }

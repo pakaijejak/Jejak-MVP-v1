@@ -5,6 +5,7 @@ import BantuanMasukan from './screens/BantuanMasukan'
 import Beranda from './screens/Beranda'
 import CekHasilFlow from './screens/cek-hasil/CekHasilFlow'
 import GerbangAkses from './screens/GerbangAkses'
+import KebijakanPrivasi from './screens/KebijakanPrivasi'
 import LihatCekHasil from './screens/LihatCekHasil'
 import Onboarding from './screens/Onboarding'
 import OnboardingContoh from './screens/OnboardingContoh'
@@ -115,6 +116,10 @@ function AksesGate() {
 function App() {
   if (window.location.pathname === '/debug') {
     return <DebugPage />
+  }
+
+  if (window.location.pathname === '/privasi') {
+    return <KebijakanPrivasi />
   }
 
   return <AksesGate />
