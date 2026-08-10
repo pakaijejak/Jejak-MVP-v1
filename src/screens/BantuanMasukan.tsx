@@ -3,7 +3,7 @@ import Button from '../components/Button'
 import Screen from '../components/Screen'
 import { textInputStyle } from '../styles/formStyles'
 
-const EMAIL_BANTUAN = 'pakai.jejak@gmail.com'
+const EMAIL_BANTUAN = 'runtut.support@gmail.com'
 const SUBJEK_EMAIL = 'Masukan Runtut'
 
 interface BantuanMasukanProps {
