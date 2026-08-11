@@ -1,8 +1,7 @@
 import Button from '../../components/Button'
 import Screen from '../../components/Screen'
+import { GOOGLE_FORM_URL } from '../../lib/constants'
 import type { OptInStatus } from '../../types/keputusan'
-
-const GOOGLE_FORM_URL = 'https://forms.gle/c9SUqwi4Uc7ApKeo9'
 
 interface OptInProps {
   onPilih: (status: OptInStatus) => void
