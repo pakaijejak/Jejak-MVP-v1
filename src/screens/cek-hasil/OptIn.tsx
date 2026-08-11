@@ -9,26 +9,22 @@ interface OptInProps {
 }
 
 function OptIn({ onPilih }: OptInProps) {
-  function handleYaKabariSaya() {
+  function handleKasihMasukan() {
     window.open(GOOGLE_FORM_URL, '_blank', 'noopener,noreferrer')
     onPilih('ya')
   }
 
   return (
     <Screen>
-      <h1 style={{ margin: 0, fontSize: '1.4rem' }}>Suka dengan sesi refleksi ini?</h1>
+      <h1 style={{ margin: 0, fontSize: '1.4rem' }}>Gimana rasanya sesi refleksi barusan?</h1>
 
       <p style={{ margin: 0, lineHeight: 1.6 }}>
-        Kami lagi siapin versi lanjutan dan beberapa tools serupa lainnya.
-      </p>
-
-      <p style={{ margin: 0, lineHeight: 1.6 }}>
-        Mau dikabari kalau ada yang baru? Nggak akan spam, ini janji. Cuma update penting sesekali.
+        Cerita singkatmu bantu kami bikin Runtut lebih pas buat kamu ke depannya.
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <Button variant="primary" onClick={handleYaKabariSaya}>
-          Ya, Kabari Saya
+        <Button variant="primary" onClick={handleKasihMasukan}>
+          Kasih Masukan
         </Button>
         <Button variant="secondary" onClick={() => onPilih('nanti_aja')}>
           Nanti Aja
