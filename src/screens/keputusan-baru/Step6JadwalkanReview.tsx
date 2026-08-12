@@ -3,7 +3,7 @@ import BottomSheet from '../../components/BottomSheet'
 import Button from '../../components/Button'
 import Chip from '../../components/Chip'
 import StepScreen from '../../components/StepScreen'
-import { buatKontenIcs, bukaIcs } from '../../lib/generateIcs'
+import { bagikanAtauBukaIcs, buatKontenIcs, buatUrlGoogleCalendar } from '../../lib/generateIcs'
 import { labelStyle, textInputStyle } from '../../styles/formStyles'
 
 type PilihanCepat = '1minggu' | '1bulan' | '3bulan' | 'sendiri'
@@ -59,17 +59,28 @@ function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6
   const [tersimpan, setTersimpan] = useState(false)
   const [tanggalTersimpan, setTanggalTersimpan] = useState<Date | null>(null)
   const [pesanError, setPesanError] = useState('')
+  const [tampilkanPilihanKalender, setTampilkanPilihanKalender] = useState(false)
   const [tampilkanPanduanKalender, setTampilkanPanduanKalender] = useState(false)
 
   const tanggalTerhitung = pilihan ? hitungTanggal(pilihan, tanggalManual) : null
   const bisaSimpan = tanggalTerhitung !== null
   const tanggalMinimal = tanggalKeString(new Date())
 
-  function handleTambahKeKalender() {
+  function handlePilihGoogleCalendar() {
+    if (!tanggalTerhitung) return
+    const url = buatUrlGoogleCalendar(masalah, tanggalTerhitung)
+    window.open(url, '_blank', 'noopener,noreferrer')
+    setTampilkanPilihanKalender(false)
+  }
+
+  async function handlePilihKalenderLain() {
     if (!tanggalTerhitung) return
     const konten = buatKontenIcs(masalah, tanggalTerhitung)
-    bukaIcs(konten)
-    setTampilkanPanduanKalender(true)
+    const hasil = await bagikanAtauBukaIcs('cek-ulang-runtut.ics', konten)
+    setTampilkanPilihanKalender(false)
+    if (hasil === 'fallback') {
+      setTampilkanPanduanKalender(true)
+    }
   }
 
   function handleKlikSimpan() {
@@ -131,7 +142,7 @@ function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6
 
         {bisaSimpan && (
           <div style={{ marginTop: 16 }}>
-            <Button variant="secondary" onClick={handleTambahKeKalender}>
+            <Button variant="secondary" onClick={() => setTampilkanPilihanKalender(true)}>
               Tambahkan ke Kalender
             </Button>
           </div>
@@ -141,6 +152,35 @@ function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6
       <Button variant="primary" onClick={handleKlikSimpan} disabled={!bisaSimpan}>
         Selesai & Simpan
       </Button>
+
+      <BottomSheet terbuka={tampilkanPilihanKalender} onTutup={() => setTampilkanPilihanKalender(false)}>
+        <h3 style={{ margin: 0, fontSize: '1.05rem' }}>Mau ditambahkan lewat mana?</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+          <Button variant="secondary" onClick={handlePilihGoogleCalendar}>
+            Google Calendar
+          </Button>
+          <Button variant="secondary" onClick={handlePilihKalenderLain}>
+            Kalender Lain di HP Ini
+          </Button>
+        </div>
+        <button
+          type="button"
+          onClick={() => setTampilkanPilihanKalender(false)}
+          style={{
+            marginTop: 8,
+            alignSelf: 'flex-start',
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--color-ink)',
+            fontWeight: 600,
+            fontFamily: 'inherit',
+            cursor: 'pointer',
+            padding: 0,
+          }}
+        >
+          Batal
+        </button>
+      </BottomSheet>
 
       <BottomSheet terbuka={tampilkanPanduanKalender} onTutup={() => setTampilkanPanduanKalender(false)}>
         <h3 style={{ margin: 0, fontSize: '1.05rem' }}>File Kalender Disiapkan</h3>
