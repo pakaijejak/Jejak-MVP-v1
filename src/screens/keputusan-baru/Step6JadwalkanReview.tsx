@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import BottomSheet from '../../components/BottomSheet'
 import Button from '../../components/Button'
 import Chip from '../../components/Chip'
 import StepScreen from '../../components/StepScreen'
-import { buatKontenIcs, unduhIcs } from '../../lib/generateIcs'
+import { buatKontenIcs, bukaIcs } from '../../lib/generateIcs'
 import { labelStyle, textInputStyle } from '../../styles/formStyles'
 
 type PilihanCepat = '1minggu' | '1bulan' | '3bulan' | 'sendiri'
@@ -58,6 +59,7 @@ function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6
   const [tersimpan, setTersimpan] = useState(false)
   const [tanggalTersimpan, setTanggalTersimpan] = useState<Date | null>(null)
   const [pesanError, setPesanError] = useState('')
+  const [tampilkanPanduanKalender, setTampilkanPanduanKalender] = useState(false)
 
   const tanggalTerhitung = pilihan ? hitungTanggal(pilihan, tanggalManual) : null
   const bisaSimpan = tanggalTerhitung !== null
@@ -66,7 +68,8 @@ function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6
   function handleTambahKeKalender() {
     if (!tanggalTerhitung) return
     const konten = buatKontenIcs(masalah, tanggalTerhitung)
-    unduhIcs('cek-ulang-runtut.ics', konten)
+    bukaIcs(konten)
+    setTampilkanPanduanKalender(true)
   }
 
   function handleKlikSimpan() {
@@ -138,6 +141,31 @@ function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6
       <Button variant="primary" onClick={handleKlikSimpan} disabled={!bisaSimpan}>
         Selesai & Simpan
       </Button>
+
+      <BottomSheet terbuka={tampilkanPanduanKalender} onTutup={() => setTampilkanPanduanKalender(false)}>
+        <h3 style={{ margin: 0, fontSize: '1.05rem' }}>File Kalender Disiapkan</h3>
+        <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
+          File kalender sudah disiapkan. Kalau tidak langsung kebuka, cek notifikasi "Download selesai" di HP kamu,
+          lalu tap filenya dan pilih app Kalender.
+        </p>
+        <button
+          type="button"
+          onClick={() => setTampilkanPanduanKalender(false)}
+          style={{
+            marginTop: 8,
+            alignSelf: 'flex-start',
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--color-ink)',
+            fontWeight: 600,
+            fontFamily: 'inherit',
+            cursor: 'pointer',
+            padding: 0,
+          }}
+        >
+          Tutup
+        </button>
+      </BottomSheet>
     </StepScreen>
   )
 }

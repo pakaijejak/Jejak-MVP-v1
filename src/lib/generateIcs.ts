@@ -75,14 +75,22 @@ export function buatKontenIcs(masalah: string, tanggalTargetReview: Date): strin
   return baris.join('\r\n')
 }
 
-export function unduhIcs(namaFile: string, konten: string): void {
+// Tanpa atribut `download`, supaya browser mencoba menangani tipe
+// text/calendar langsung lewat pilihan "Buka dengan" (app Kalender), bukan
+// otomatis unduh ke folder Downloads. Perilaku ini beda-beda tergantung
+// versi Chrome/Android; kalau browser tetap memilih untuk mengunduh, itu
+// bukan kesalahan di sini, jadi tetap dibarengi panduan manual di UI.
+export function bukaIcs(konten: string): void {
   const blob = new Blob([konten], { type: 'text/calendar;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = namaFile
+  link.target = '_blank'
+  link.rel = 'noopener'
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  // Revoke ditunda karena penanganan file (buka app Kalender / unduh) di HP
+  // berjalan async, revoke terlalu cepat bisa bikin browser gagal memuatnya.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000)
 }
