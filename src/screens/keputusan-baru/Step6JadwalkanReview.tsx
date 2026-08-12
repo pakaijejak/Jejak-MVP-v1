@@ -2,11 +2,13 @@ import { useState } from 'react'
 import Button from '../../components/Button'
 import Chip from '../../components/Chip'
 import StepScreen from '../../components/StepScreen'
+import { buatKontenIcs, unduhIcs } from '../../lib/generateIcs'
 import { labelStyle, textInputStyle } from '../../styles/formStyles'
 
 type PilihanCepat = '1minggu' | '1bulan' | '3bulan' | 'sendiri'
 
 interface Step6Props {
+  masalah: string
   onSimpan: (tanggalTargetReview: string) => void
   onSelesai: () => void
   onKembali: () => void
@@ -50,7 +52,7 @@ function tanggalBukanMasaLalu(tanggal: Date): boolean {
   return tanggalTanpaJam.getTime() >= hariIniTanpaJam.getTime()
 }
 
-function Step6JadwalkanReview({ onSimpan, onSelesai, onKembali }: Step6Props) {
+function Step6JadwalkanReview({ masalah, onSimpan, onSelesai, onKembali }: Step6Props) {
   const [pilihan, setPilihan] = useState<PilihanCepat | null>(null)
   const [tanggalManual, setTanggalManual] = useState('')
   const [tersimpan, setTersimpan] = useState(false)
@@ -60,6 +62,12 @@ function Step6JadwalkanReview({ onSimpan, onSelesai, onKembali }: Step6Props) {
   const tanggalTerhitung = pilihan ? hitungTanggal(pilihan, tanggalManual) : null
   const bisaSimpan = tanggalTerhitung !== null
   const tanggalMinimal = tanggalKeString(new Date())
+
+  function handleTambahKeKalender() {
+    if (!tanggalTerhitung) return
+    const konten = buatKontenIcs(masalah, tanggalTerhitung)
+    unduhIcs('cek-ulang-runtut.ics', konten)
+  }
 
   function handleKlikSimpan() {
     if (!tanggalTerhitung) return
@@ -116,6 +124,14 @@ function Step6JadwalkanReview({ onSimpan, onSelesai, onKembali }: Step6Props) {
 
         {pesanError && (
           <p style={{ color: 'var(--color-accent)', fontSize: '0.9rem', marginTop: 12 }}>{pesanError}</p>
+        )}
+
+        {bisaSimpan && (
+          <div style={{ marginTop: 16 }}>
+            <Button variant="secondary" onClick={handleTambahKeKalender}>
+              Tambahkan ke Kalender
+            </Button>
+          </div>
         )}
       </div>
 

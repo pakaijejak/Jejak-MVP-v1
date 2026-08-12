@@ -93,7 +93,14 @@ function MulaiKeputusanBaru({ onSelesai, onBatal }: MulaiKeputusanBaruProps) {
         />
       )
     case 6:
-      return <Step6JadwalkanReview onSimpan={simpanKeputusan} onSelesai={onSelesai} onKembali={kembali} />
+      return (
+        <Step6JadwalkanReview
+          masalah={draft.masalah}
+          onSimpan={simpanKeputusan}
+          onSelesai={onSelesai}
+          onKembali={kembali}
+        />
+      )
     default:
       return null
   }
