@@ -100,49 +100,58 @@ export function buatUrlGoogleCalendar(masalah: string, tanggalTargetReview: Date
   return `https://calendar.google.com/calendar/render?${params.toString()}`
 }
 
-// Tanpa atribut `download`, supaya browser mencoba menangani tipe
-// text/calendar langsung lewat pilihan "Buka dengan" (app Kalender), bukan
-// otomatis unduh ke folder Downloads. Perilaku ini beda-beda tergantung
-// versi Chrome/Android; kalau browser tetap memilih untuk mengunduh, itu
-// bukan kesalahan di sini, jadi tetap dibarengi panduan manual di UI.
-function bukaIcs(konten: string): void {
+// Pakai atribut `download` (bukan target="_blank" ke blob URL). `download`
+// adalah unduhan blob langsung, bukan navigasi ke tab baru, jadi tidak kena
+// popup-blocker dan benar-benar memicu notifikasi "Download selesai" yang
+// nyata di HP -- beda dari pendekatan sebelumnya yang bisa di-block browser
+// secara diam-diam tanpa exception apa pun.
+function unduhIcs(namaFile: string, konten: string): void {
   const blob = new Blob([konten], { type: 'text/calendar;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.target = '_blank'
-  link.rel = 'noopener'
+  link.download = namaFile
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-  // Revoke ditunda karena penanganan file (buka app Kalender / unduh) di HP
-  // berjalan async, revoke terlalu cepat bisa bikin browser gagal memuatnya.
-  setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  URL.revokeObjectURL(url)
 }
 
-export type HasilBagikanIcs = 'dibagikan' | 'dibatalkan' | 'fallback'
+export type HasilTambahKalenderLain = 'dibagikan' | 'dibatalkan' | 'diunduh' | 'gagal'
 
 // Lampirkan file .ics ke menu share asli Android (navigator.share), supaya
 // user pilih sendiri app kalender yang mereka mau, bukan sistem yang
-// menebak. Kalau browser tidak dukung share file (canShare), jatuh ke cara
-// unduh manual yang sudah ada, dibarengi pesan panduan di UI.
-export async function bagikanAtauBukaIcs(namaFile: string, konten: string): Promise<HasilBagikanIcs> {
+// menebak.
+//
+// PENTING: fallback unduh manual HANYA dipicu di jalur yang sepenuhnya
+// sinkron dari tap user (saat share file sejak awal tidak didukung),
+// SEBELUM ada `await` apa pun. Sengaja TIDAK mencoba fallback unduh SETELAH
+// navigator.share() gagal/reject -- begitu share() dipanggil, ia
+// mengonsumsi transient activation dari tap user (berhasil maupun gagal),
+// jadi trigger unduhan susulan di titik itu berisiko besar diblokir browser
+// secara diam-diam tanpa exception apa pun, membuat kita mengira triggernya
+// berhasil padahal tidak terjadi apa-apa di HP. Makanya kalau share() gagal
+// (bukan dibatalkan user), kita laporkan gagal secara jujur, bukan berasumsi
+// berhasil dengan pesan sukses palsu.
+export async function tambahKeKalenderLain(namaFile: string, konten: string): Promise<HasilTambahKalenderLain> {
   const file = new File([konten], namaFile, { type: 'text/calendar' })
-  const bisaBagikanFile =
-    typeof navigator.canShare === 'function' && typeof navigator.share === 'function' && navigator.canShare({ files: [file] })
+  const dukungShareFile =
+    typeof navigator.canShare === 'function' &&
+    typeof navigator.share === 'function' &&
+    navigator.canShare({ files: [file] })
 
-  if (bisaBagikanFile) {
-    try {
-      await navigator.share({ files: [file] })
-      return 'dibagikan'
-    } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        return 'dibatalkan'
-      }
-      // gagal karena alasan lain (jarang), jatuh ke fallback unduh manual di bawah
-    }
+  if (!dukungShareFile) {
+    unduhIcs(namaFile, konten)
+    return 'diunduh'
   }
 
-  bukaIcs(konten)
-  return 'fallback'
+  try {
+    await navigator.share({ files: [file] })
+    return 'dibagikan'
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      return 'dibatalkan'
+    }
+    return 'gagal'
+  }
 }
