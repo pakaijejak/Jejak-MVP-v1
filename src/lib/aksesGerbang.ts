@@ -25,6 +25,8 @@ export const HASH_KODE_AKSES_VALID = [
   '1d74988c8756088ef19c5e4561fe3eb3b716156af8d153f1a1ed331aec4d7935', // hash dari "RUNTUTPIKIR221"
   'bee37098a23a2eccb22db3e2ba3212b0d5fb28f091c6d018d5f7cf4b06e89fd6', // hash dari "RUNTUTPIKIR331"
   'e1ecab44a5bfa95cde4b9741d2e6e94e06eaedaf726f473a59c5dbcf471e3949', // hash dari "RUNTUTPIKIR921"
+  '82ac2b657bbec11add2bb9c9834d9978cf1d0febcf35c72066432b0ffe4c552d', // hash dari "RUNTUTTESIM"
+  'd460fa27dbaca95ffaaef15df88d88665cb230f11251918be3e17de9d7857684', // hash dari "RUNTUTTESGUIM"
 ]
 
 async function hitungHashSha256(teks: string): Promise<string> {
