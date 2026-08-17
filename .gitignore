@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Env
+.env
+
+# Claude Code local overrides
+.claude/settings.local.json
+
+# Local social media automation (not for public repo)
+sosmed/
