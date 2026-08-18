@@ -8,6 +8,7 @@ export interface RefleksiJawaban {
   prosesYangMembantuAtauKurang: string
   perasaanSekarang: string
   halYangBedaKedepan: string
+  kekhawatiranTerbukti: string
   metaRefleksi?: string
 }
 
@@ -22,6 +23,7 @@ function Step9RefleksiHasil({ onSelesai, onKembali }: Step9Props) {
     prosesYangMembantuAtauKurang: '',
     perasaanSekarang: '',
     halYangBedaKedepan: '',
+    kekhawatiranTerbukti: '',
   })
   const [metaRefleksi, setMetaRefleksi] = useState('')
   const [terbukaMeta, setTerbukaMeta] = useState(false)
@@ -76,6 +78,17 @@ function Step9RefleksiHasil({ onSelesai, onKembali }: Step9Props) {
         <textarea
           value={jawaban.halYangBedaKedepan}
           onChange={(e) => update({ halYangBedaKedepan: e.target.value })}
+          rows={3}
+          style={{ ...textInputStyle, resize: 'vertical', marginTop: 8 }}
+        />
+      </div>
+
+      <div>
+        <p style={labelStyle}>Apakah kekhawatiranmu terbukti?</p>
+        <textarea
+          value={jawaban.kekhawatiranTerbukti}
+          onChange={(e) => update({ kekhawatiranTerbukti: e.target.value })}
+          placeholder="Misal: kekhawatiran atau asumsi yang kamu tulis di awal (Step 2-3)"
           rows={3}
           style={{ ...textInputStyle, resize: 'vertical', marginTop: 8 }}
         />

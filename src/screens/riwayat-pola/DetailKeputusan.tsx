@@ -198,6 +198,16 @@ function DetailKeputusan({ keputusan, onKembali, onUpdateKeputusan }: DetailKepu
               <p style={{ margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--color-ink-muted)' }}>
                 Skenario terburuk: {o.skenarioTerburuk}
               </p>
+              {o.risiko?.ada === true && (
+                <p style={{ margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--color-ink-muted)' }}>
+                  Risiko: {o.risiko.level ?? 'Ada, level belum diisi'}
+                </p>
+              )}
+              {o.risiko?.ada === false && (
+                <p style={{ margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--color-ink-muted)' }}>
+                  Risiko: Tidak ada
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -245,6 +255,11 @@ function DetailKeputusan({ keputusan, onKembali, onUpdateKeputusan }: DetailKepu
               label="Hal yang mau dilakukan beda"
               value={keputusan.refleksi.halYangBedaKedepan}
               onSimpan={(v) => simpanRefleksi({ halYangBedaKedepan: v })}
+            />
+            <FieldRefleksi
+              label="Apakah kekhawatiranmu terbukti?"
+              value={keputusan.refleksi.kekhawatiranTerbukti ?? ''}
+              onSimpan={(v) => simpanRefleksi({ kekhawatiranTerbukti: v || undefined })}
             />
             <FieldRefleksi
               label="Pertanyaan paling susah dijawab"

@@ -8,7 +8,7 @@ export interface KeputusanDraft {
   infoYangDimiliki: string
   asumsiYangDianggapPasti?: string
   sudahCekPandanganBerbeda?: boolean
-  opsi: { teks: string; skenarioTerburuk: string }[]
+  opsi: { teks: string; skenarioTerburuk: string; risiko?: { ada?: boolean; level?: 'Rendah' | 'Sedang' | 'Tinggi' } }[]
   perspektifOrangLain?: string
   opsiTerpilihIndex?: number
   keyakinanAwal?: number

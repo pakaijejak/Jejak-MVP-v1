@@ -1,8 +1,11 @@
 import Button from '../../components/Button'
+import Chip from '../../components/Chip'
 import StepScreen from '../../components/StepScreen'
 import Tooltip from '../../components/Tooltip'
 import { labelStyle, textInputStyle } from '../../styles/formStyles'
 import type { KeputusanDraft } from './types'
+
+const LEVEL_RISIKO = ['Rendah', 'Sedang', 'Tinggi'] as const
 
 const MAX_OPSI = 4
 const MIN_OPSI = 2
@@ -26,6 +29,11 @@ function Step4OpsiSkenario({ draft, onUpdate, onLanjut, onKembali }: Step4Props)
     onUpdate({ opsi: next })
   }
 
+  function updateRisiko(index: number, partial: Partial<NonNullable<KeputusanDraft['opsi'][number]['risiko']>>) {
+    const risikoSaatIni = opsi[index].risiko ?? {}
+    updateOpsi(index, { risiko: { ...risikoSaatIni, ...partial } })
+  }
+
   function tambahOpsi() {
     if (opsi.length >= MAX_OPSI) return
     onUpdate({ opsi: [...opsi, { teks: '', skenarioTerburuk: '' }] })
@@ -41,13 +49,14 @@ function Step4OpsiSkenario({ draft, onUpdate, onLanjut, onKembali }: Step4Props)
       <p style={labelStyle}>Tulis 2 sampai 3 opsi yang kamu pertimbangkan:</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <p style={{ ...labelStyle, margin: 0 }}>Pilihan Keputusan</p>
         {opsi.map((o, index) => (
           <div
             key={index}
             style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ ...labelStyle, fontSize: '0.95rem' }}>Opsi {index + 1}</p>
+              <p style={{ ...labelStyle, fontSize: '0.95rem' }}>Pilihan {index + 1}</p>
               {opsi.length > MIN_OPSI && (
                 <button
                   type="button"
@@ -88,6 +97,35 @@ function Step4OpsiSkenario({ draft, onUpdate, onLanjut, onKembali }: Step4Props)
               rows={2}
               style={{ ...textInputStyle, resize: 'vertical' }}
             />
+
+            <div>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-ink-muted)' }}>
+                Apakah opsi ini punya risiko? (opsional)
+              </p>
+              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                <Chip label="Ya" selected={o.risiko?.ada === true} onClick={() => updateRisiko(index, { ada: true })} />
+                <Chip
+                  label="Tidak"
+                  selected={o.risiko?.ada === false}
+                  onClick={() => updateRisiko(index, { ada: false, level: undefined })}
+                />
+              </div>
+              {o.risiko?.ada === true && (
+                <div style={{ marginTop: 8 }}>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-ink-muted)' }}>Seberapa besar?</p>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                    {LEVEL_RISIKO.map((level) => (
+                      <Chip
+                        key={level}
+                        label={level}
+                        selected={o.risiko?.level === level}
+                        onClick={() => updateRisiko(index, { level })}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

@@ -18,6 +18,10 @@ function Onboarding({ onCobaSekarang, onLewati }: OnboardingProps) {
         </h1>
       </div>
 
+      <p style={{ margin: 0, color: 'var(--color-ink-muted)', lineHeight: 1.5 }}>
+        Cocok dipakai saat kamu punya waktu buat mikir jernih, apalagi untuk keputusan yang berat.
+      </p>
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div>
           <Button variant="primary" onClick={onCobaSekarang}>

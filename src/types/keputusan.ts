@@ -16,7 +16,11 @@ export interface Keputusan {
   sudahCekPandanganBerbeda: boolean;
 
   // Step 4 — Opsi & Skenario Terburuk
-  opsi: { teks: string; skenarioTerburuk: string }[];
+  opsi: {
+    teks: string;
+    skenarioTerburuk: string;
+    risiko?: { ada?: boolean; level?: 'Rendah' | 'Sedang' | 'Tinggi' };
+  }[];
   perspektifOrangLain?: string;
 
   // Step 5 — Putuskan + Prediksi Keyakinan
@@ -42,6 +46,7 @@ export interface Keputusan {
     prosesYangMembantuAtauKurang: string;
     perasaanSekarang: string;
     halYangBedaKedepan: string;
+    kekhawatiranTerbukti?: string;
     metaRefleksi?: string;
   };
 
