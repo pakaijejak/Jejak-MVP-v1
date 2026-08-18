@@ -212,7 +212,7 @@ function OnboardingContoh({ onLanjut, onBatal }: OnboardingContohProps) {
       </p>
 
       <Button variant="primary" onClick={onLanjut}>
-        Lanjut ke Beranda
+        Lanjut
       </Button>
     </StepScreen>
   )

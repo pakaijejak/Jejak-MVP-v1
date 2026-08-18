@@ -19,9 +19,14 @@ function Onboarding({ onCobaSekarang, onLewati }: OnboardingProps) {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <Button variant="primary" onClick={onCobaSekarang}>
-          Coba Sekarang
-        </Button>
+        <div>
+          <Button variant="primary" onClick={onCobaSekarang}>
+            Coba Sekarang
+          </Button>
+          <p style={{ margin: '6px 0 0', fontSize: '0.8rem', color: 'var(--color-ink-muted)', textAlign: 'center' }}>
+            (sekitar 2 menit)
+          </p>
+        </div>
         <Button variant="secondary" onClick={onLewati}>
           Lewati, langsung ke keputusan saya
         </Button>

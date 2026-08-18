@@ -22,7 +22,7 @@ function Tooltip({ istilah, isi }: TooltipProps) {
           border: '1.5px solid var(--color-ink-muted)',
           background: 'transparent',
           color: 'var(--color-ink-muted)',
-          fontSize: '0.75rem',
+          fontSize: '0.7rem',
           lineHeight: 1,
           cursor: 'pointer',
           display: 'inline-flex',
@@ -32,7 +32,7 @@ function Tooltip({ istilah, isi }: TooltipProps) {
           fontFamily: 'inherit',
         }}
       >
-        ?
+        💡
       </button>
 
       <BottomSheet terbuka={terbuka} onTutup={() => setTerbuka(false)}>

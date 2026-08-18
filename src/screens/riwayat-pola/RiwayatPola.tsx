@@ -9,8 +9,10 @@ import {
   ambilKategoriCustom,
   ambilSemuaKeputusan,
   ambilTampilkanGrafikPola,
+  hapusKeputusan,
   setTampilkanGrafikPola,
 } from '../../lib/storage'
+import type { Keputusan } from '../../types/keputusan'
 import CadangkanData from './CadangkanData'
 import DetailKeputusan from './DetailKeputusan'
 import GrafikKalibrasi from './GrafikKalibrasi'
@@ -33,6 +35,8 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
   const [idDetail, setIdDetail] = useState<string | null>(null)
   const [subLayar, setSubLayar] = useState<SubLayar>('daftar')
   const [menuTerbuka, setMenuTerbuka] = useState(false)
+  const [kartuDipilih, setKartuDipilih] = useState<Keputusan | null>(null)
+  const [konfirmasiHapusTerbuka, setKonfirmasiHapusTerbuka] = useState(false)
 
   const terfilter = useMemo(() => {
     const hasil =
@@ -44,6 +48,30 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
     const next = !tampilkanGrafik
     setTampilkanGrafikPola(next)
     setTampilkanGrafikState(next)
+  }
+
+  function handleLanjutKeTujuan() {
+    if (!kartuDipilih) return
+    const k = kartuDipilih
+    setKartuDipilih(null)
+    if (k.status === 'menunggu_direview') {
+      onPilihPending(k.id)
+    } else {
+      setIdDetail(k.id)
+    }
+  }
+
+  function handleBatalHapus() {
+    setKonfirmasiHapusTerbuka(false)
+    setKartuDipilih(null)
+  }
+
+  function handleKonfirmasiHapus() {
+    if (!kartuDipilih) return
+    hapusKeputusan(kartuDipilih.id)
+    setSemua((prev) => prev.filter((k) => k.id !== kartuDipilih.id))
+    setKonfirmasiHapusTerbuka(false)
+    setKartuDipilih(null)
   }
 
   if (idDetail) {
@@ -240,7 +268,7 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
                 <KartuRiwayat
                   key={k.id}
                   keputusan={k}
-                  onTap={k.status === 'menunggu_direview' ? () => onPilihPending(k.id) : () => setIdDetail(k.id)}
+                  onTap={() => setKartuDipilih(k)}
                   tanpaGarisBawah={index === terfilter.length - 1}
                 />
               ))}
@@ -248,6 +276,36 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
           )}
         </div>
       </div>
+
+      <BottomSheet
+        terbuka={kartuDipilih !== null && !konfirmasiHapusTerbuka}
+        onTutup={() => setKartuDipilih(null)}
+      >
+        <Button variant="secondary" onClick={handleLanjutKeTujuan}>
+          {kartuDipilih?.status === 'menunggu_direview' ? 'Cek Hasil Sekarang' : 'Lihat Detail'}
+        </Button>
+        <Button variant="secondary" onClick={() => setKonfirmasiHapusTerbuka(true)}>
+          Hapus Keputusan Ini
+        </Button>
+      </BottomSheet>
+
+      <BottomSheet terbuka={konfirmasiHapusTerbuka} onTutup={handleBatalHapus}>
+        <p style={{ margin: 0, lineHeight: 1.5 }}>
+          Yakin mau hapus keputusan ini? Tindakan ini tidak bisa dibatalkan.
+        </p>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ flex: 1 }}>
+            <Button variant="secondary" onClick={handleBatalHapus}>
+              Batal
+            </Button>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Button variant="secondary" onClick={handleKonfirmasiHapus}>
+              Ya
+            </Button>
+          </div>
+        </div>
+      </BottomSheet>
     </Screen>
   )
 }

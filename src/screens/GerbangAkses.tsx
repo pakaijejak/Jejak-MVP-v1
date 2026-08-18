@@ -11,9 +11,10 @@ const LINK_BELI_LYNK = 'https://lynk.id/runtut'
 
 interface GerbangAksesProps {
   onTerverifikasi: () => void
+  onLihatContoh: () => void
 }
 
-function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
+function GerbangAkses({ onTerverifikasi, onLihatContoh }: GerbangAksesProps) {
   const [kode, setKode] = useState('')
   const [error, setError] = useState(false)
   const [memeriksa, setMemeriksa] = useState(false)
@@ -97,6 +98,24 @@ function GerbangAkses({ onTerverifikasi }: GerbangAksesProps) {
           Beli di sini
         </a>
       </p>
+
+      <button
+        type="button"
+        onClick={onLihatContoh}
+        style={{
+          background: 'transparent',
+          border: 'none',
+          color: 'var(--color-ink-muted)',
+          fontSize: '0.85rem',
+          textAlign: 'center',
+          cursor: 'pointer',
+          fontFamily: 'inherit',
+          padding: 0,
+          textDecoration: 'underline',
+        }}
+      >
+        Belum coba dulu? Lihat contoh interaktifnya
+      </button>
 
       <p style={{ margin: 0, textAlign: 'center' }}>
         <a href="/privasi" style={{ fontSize: '0.8rem', color: 'var(--color-ink-muted)' }}>

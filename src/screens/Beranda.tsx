@@ -3,14 +3,12 @@ import Button from '../components/Button'
 import Logo from '../components/Logo'
 import PanduanInstalasi from '../components/PanduanInstalasi'
 import Screen from '../components/Screen'
-import { GOOGLE_FORM_URL } from '../lib/constants'
 import { apakahModeStandalone } from '../lib/pwa'
 import {
   ambilKeputusanPending,
   ambilNamaSapaan,
   ambilPromptInstallDitutup,
   setNamaSapaan,
-  setOptInStatus,
   setPromptInstallDitutup,
 } from '../lib/storage'
 import { nudgeCardStyle } from '../styles/formStyles'
@@ -33,11 +31,6 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantu
   function tutupPromptInstall() {
     setPromptInstallDitutup(true)
     setTampilkanPromptInstall(false)
-  }
-
-  function handleKasihMasukan() {
-    window.open(GOOGLE_FORM_URL, '_blank', 'noopener,noreferrer')
-    setOptInStatus('ya')
   }
 
   return (
@@ -131,50 +124,36 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantu
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <Button variant="primary" onClick={onMulaiKeputusanBaru}>
-          + Mulai Keputusan Baru
-        </Button>
+        <div>
+          <Button variant="primary" onClick={onMulaiKeputusanBaru}>
+            + Mulai Keputusan Baru
+          </Button>
+          <p style={{ margin: '6px 0 0', fontSize: '0.8rem', color: 'var(--color-ink-muted)' }}>
+            Biasanya 5-10 menit buat catat, beberapa menit lagi nanti pas cek hasil
+          </p>
+        </div>
         <Button variant="secondary" onClick={onRiwayatPola}>
           Riwayat &amp; Pola
         </Button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <button
-          type="button"
-          onClick={onBantuanMasukan}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            color: 'var(--color-accent)',
-            cursor: 'pointer',
-            padding: 0,
-            fontFamily: 'inherit',
-            textAlign: 'left',
-          }}
-        >
-          Butuh bantuan? Hubungi kami
-        </button>
-        <button
-          type="button"
-          onClick={handleKasihMasukan}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            color: 'var(--color-accent)',
-            cursor: 'pointer',
-            padding: 0,
-            fontFamily: 'inherit',
-            textAlign: 'left',
-          }}
-        >
-          Kasih masukan buat Runtut
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={onBantuanMasukan}
+        style={{
+          background: 'none',
+          border: 'none',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          color: 'var(--color-accent)',
+          cursor: 'pointer',
+          padding: 0,
+          fontFamily: 'inherit',
+          textAlign: 'left',
+        }}
+      >
+        Butuh bantuan/mau kasih feedback?
+      </button>
     </Screen>
   )
 }
