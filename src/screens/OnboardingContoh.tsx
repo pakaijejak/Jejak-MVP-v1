@@ -1,31 +1,40 @@
 import { useState } from 'react'
 import Button from '../components/Button'
-import Chip from '../components/Chip'
-import StepScreen from '../components/StepScreen'
-import { KALIMAT_GAP_KALIBRASI, KALIMAT_REASSURANCE_KALIBRASI, hitungSkorKalibrasi } from '../lib/kalibrasi'
-import { labelStyle, textInputStyle } from '../styles/formStyles'
+import Screen from '../components/Screen'
+import Step1RumuskanMasalah from './keputusan-baru/Step1RumuskanMasalah'
+import Step2JedaEmosi from './keputusan-baru/Step2JedaEmosi'
+import Step3CekFakta from './keputusan-baru/Step3CekFakta'
+import Step4OpsiSkenario from './keputusan-baru/Step4OpsiSkenario'
+import Step5Putuskan from './keputusan-baru/Step5Putuskan'
+import type { KeputusanDraft } from './keputusan-baru/types'
+import Step7CatatHasil from './cek-hasil/Step7CatatHasil'
+import Step8SkorKalibrasi from './cek-hasil/Step8SkorKalibrasi'
+import Step9RefleksiHasil from './cek-hasil/Step9RefleksiHasil'
+import { resolveKategori } from '../lib/storage'
+import type { Keputusan } from '../types/keputusan'
 
-const EMOSI_PILIHAN = ['Cemas', 'Bingung', 'Marah', 'Sedih', 'Netral', 'Bersemangat']
+// Walkthrough Latihan memakai ulang komponen Step 1-9 ASLI (mode praktik),
+// supaya pembaruan alur sungguhan otomatis ikut ke sini, tidak perlu
+// disinkronkan manual lagi. Draft & hasil HANYA hidup di state komponen ini,
+// tidak pernah dikirim ke tambahKeputusan()/updateKeputusan() di storage.ts.
 
-// State latihan ini SENGAJA hanya di komponen (tidak pernah tambahKeputusan()/localStorage),
-// karena ini cuma simulasi contoh receh, bukan keputusan sungguhan.
-interface DraftLatihan {
-  masalah: string
-  emosi: string | null
-  opsi: [string, string]
-  opsiTerpilihIndex: number | null
-  keyakinanAwal: number
-  hasilPersen: number
+const draftAwalLatihan: KeputusanDraft = {
+  masalah: 'Mau makan apa hari ini?',
+  infoYangDimiliki: '',
+  asumsiYangDianggapPasti: '',
+  perspektifOrangLain: '',
+  opsi: [
+    { teks: 'Nasi Padang', skenarioTerburuk: '' },
+    { teks: 'Soto', skenarioTerburuk: '' },
+  ],
 }
 
-const draftAwal: DraftLatihan = {
-  masalah: 'Mau makan siang apa hari ini',
-  emosi: null,
-  opsi: ['Nasi Padang', 'Soto'],
-  opsiTerpilihIndex: null,
-  keyakinanAwal: 50,
-  hasilPersen: 50,
+interface DraftHasilLatihan {
+  hasilPersen?: number
+  catatanHasil: string
 }
+
+type Langkah = 'step1' | 'step2' | 'step3' | 'step4' | 'step5' | 'transisi' | 'step7' | 'step8' | 'step9' | 'penutup'
 
 interface OnboardingContohProps {
   onLanjut: () => void
@@ -33,189 +42,133 @@ interface OnboardingContohProps {
 }
 
 function OnboardingContoh({ onLanjut, onBatal }: OnboardingContohProps) {
-  const [langkah, setLangkah] = useState(1)
-  const [draft, setDraft] = useState<DraftLatihan>(draftAwal)
-  const [tersentuhKeyakinan, setTersentuhKeyakinan] = useState(false)
-  const [tersentuhHasil, setTersentuhHasil] = useState(false)
+  const [langkah, setLangkah] = useState<Langkah>('step1')
+  const [draft, setDraft] = useState<KeputusanDraft>(draftAwalLatihan)
+  const [draftHasil, setDraftHasil] = useState<DraftHasilLatihan>({ catatanHasil: '' })
+  const [keputusanLatihan, setKeputusanLatihan] = useState<Keputusan | null>(null)
 
-  function update(partial: Partial<DraftLatihan>) {
+  function updateDraft(partial: Partial<KeputusanDraft>) {
     setDraft((prev) => ({ ...prev, ...partial }))
   }
 
-  function kembali() {
-    if (langkah <= 1) {
-      onBatal()
-      return
-    }
-    setLangkah((l) => l - 1)
+  function updateDraftHasil(partial: Partial<DraftHasilLatihan>) {
+    setDraftHasil((prev) => ({ ...prev, ...partial }))
   }
 
-  if (langkah === 1) {
-    const bisaLanjut = draft.masalah.trim().length > 0
+  function selesaikanStep5() {
+    setKeputusanLatihan({
+      id: 'latihan',
+      createdAt: new Date().toISOString(),
+      masalah: draft.masalah,
+      kategori: resolveKategori(draft.kategori as string),
+      emosi: draft.emosi as string,
+      intensitasEmosi: draft.intensitasEmosi as NonNullable<KeputusanDraft['intensitasEmosi']>,
+      infoYangDimiliki: draft.infoYangDimiliki,
+      asumsiYangDianggapPasti: draft.asumsiYangDianggapPasti?.trim() || undefined,
+      sudahCekPandanganBerbeda: draft.sudahCekPandanganBerbeda as boolean,
+      opsi: draft.opsi,
+      perspektifOrangLain: draft.perspektifOrangLain?.trim() || undefined,
+      opsiTerpilihIndex: draft.opsiTerpilihIndex as number,
+      keyakinanAwal: draft.keyakinanAwal as number,
+      tanggalTargetReview: new Date().toISOString(),
+      status: 'menunggu_direview',
+    })
+    setLangkah('transisi')
+  }
 
-    return (
-      <StepScreen step={1} totalSteps={5} onKembali={kembali}>
-        <p style={labelStyle}>Keputusan apa yang lagi kamu hadapi?</p>
-        <textarea
-          value={draft.masalah}
-          onChange={(e) => update({ masalah: e.target.value })}
-          rows={3}
-          style={{ ...textInputStyle, resize: 'vertical' }}
-          autoFocus
+  switch (langkah) {
+    case 'step1':
+      return (
+        <Step1RumuskanMasalah
+          draft={draft}
+          onUpdate={updateDraft}
+          onLanjut={() => setLangkah('step2')}
+          onKembali={onBatal}
+          modePraktik
         />
-        <Button variant="primary" onClick={() => setLangkah(2)} disabled={!bisaLanjut}>
-          Lanjut
-        </Button>
-      </StepScreen>
-    )
-  }
-
-  if (langkah === 2) {
-    return (
-      <StepScreen step={2} totalSteps={5} onKembali={kembali}>
-        <p style={labelStyle}>Lagi ngerasa apa soal keputusan ini?</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-          {EMOSI_PILIHAN.map((emosi) => (
-            <Chip key={emosi} label={emosi} selected={draft.emosi === emosi} onClick={() => update({ emosi })} />
-          ))}
-        </div>
-        <Button variant="primary" onClick={() => setLangkah(3)} disabled={!draft.emosi}>
-          Lanjut
-        </Button>
-      </StepScreen>
-    )
-  }
-
-  if (langkah === 3) {
-    const bisaLanjut =
-      draft.opsiTerpilihIndex !== null && tersentuhKeyakinan && draft.opsi.every((o) => o.trim().length > 0)
-
-    return (
-      <StepScreen step={3} totalSteps={5} onKembali={kembali}>
-        <div>
-          <p style={labelStyle}>Opsi apa aja yang kamu pertimbangkan?</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-            {draft.opsi.map((teks, index) => (
-              <input
-                key={index}
-                value={teks}
-                onChange={(e) => {
-                  const opsiBaru: [string, string] = [...draft.opsi]
-                  opsiBaru[index] = e.target.value
-                  update({ opsi: opsiBaru })
-                }}
-                style={textInputStyle}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p style={labelStyle}>Kamu pilih yang mana?</p>
-          <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-            {draft.opsi.map((teks, index) => (
-              <Chip
-                key={index}
-                label={teks.trim() || `Opsi ${index + 1}`}
-                selected={draft.opsiTerpilihIndex === index}
-                onClick={() => update({ opsiTerpilihIndex: index })}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p style={{ ...labelStyle, fontSize: '1rem' }}>Seberapa yakin ini pilihan yang tepat?</p>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={draft.keyakinanAwal}
-            onChange={(e) => {
-              setTersentuhKeyakinan(true)
-              update({ keyakinanAwal: Number(e.target.value) })
-            }}
-            style={{ width: '100%', marginTop: 12, accentColor: 'var(--color-accent)' }}
-          />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '0.85rem',
-              color: 'var(--color-ink-muted)',
-            }}
-          >
-            <span>0%</span>
-            <span style={{ fontWeight: 600, color: 'var(--color-ink)' }}>{draft.keyakinanAwal}%</span>
-            <span>100%</span>
-          </div>
-        </div>
-
-        <Button variant="primary" onClick={() => setLangkah(4)} disabled={!bisaLanjut}>
-          Lanjut
-        </Button>
-      </StepScreen>
-    )
-  }
-
-  if (langkah === 4) {
-    return (
-      <StepScreen step={4} totalSteps={5} onKembali={kembali}>
-        <p style={labelStyle}>Oke, anggap kamu udah makan. Gimana, sesuai ekspektasi?</p>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={draft.hasilPersen}
-          onChange={(e) => {
-            setTersentuhHasil(true)
-            update({ hasilPersen: Number(e.target.value) })
-          }}
-          style={{ width: '100%', marginTop: 12, accentColor: 'var(--color-accent)' }}
+      )
+    case 'step2':
+      return (
+        <Step2JedaEmosi
+          draft={draft}
+          onUpdate={updateDraft}
+          onLanjut={() => setLangkah('step3')}
+          onKembali={() => setLangkah('step1')}
         />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontSize: '0.85rem',
-            color: 'var(--color-ink-muted)',
-          }}
-        >
-          <span>Meleset</span>
-          <span style={{ fontWeight: 600, color: 'var(--color-ink)' }}>{draft.hasilPersen}%</span>
-          <span>Sesuai</span>
-        </div>
-        <Button variant="primary" onClick={() => setLangkah(5)} disabled={!tersentuhHasil}>
-          Lanjut
-        </Button>
-      </StepScreen>
-    )
+      )
+    case 'step3':
+      return (
+        <Step3CekFakta
+          draft={draft}
+          onUpdate={updateDraft}
+          onLanjut={() => setLangkah('step4')}
+          onKembali={() => setLangkah('step2')}
+        />
+      )
+    case 'step4':
+      return (
+        <Step4OpsiSkenario
+          draft={draft}
+          onUpdate={updateDraft}
+          onLanjut={() => setLangkah('step5')}
+          onKembali={() => setLangkah('step3')}
+        />
+      )
+    case 'step5':
+      return (
+        <Step5Putuskan
+          draft={draft}
+          onUpdate={updateDraft}
+          onLanjut={selesaikanStep5}
+          onKembali={() => setLangkah('step4')}
+        />
+      )
+    case 'transisi':
+      return (
+        <Screen>
+          <p style={{ margin: 0, fontSize: '1.2rem', lineHeight: 1.5 }}>
+            Oke, sekarang anggap kamu udah makan. Gimana hasilnya?
+          </p>
+          <Button variant="primary" onClick={() => setLangkah('step7')}>
+            Lanjut
+          </Button>
+        </Screen>
+      )
+    case 'step7':
+      return (
+        <Step7CatatHasil
+          hasilPersen={draftHasil.hasilPersen}
+          catatanHasil={draftHasil.catatanHasil}
+          onUpdate={updateDraftHasil}
+          onLanjut={() => setLangkah('step8')}
+          onKembali={() => setLangkah('step5')}
+        />
+      )
+    case 'step8':
+      if (!keputusanLatihan) return null
+      return (
+        <Step8SkorKalibrasi
+          keputusan={keputusanLatihan}
+          hasilPersen={draftHasil.hasilPersen as number}
+          onLanjut={() => setLangkah('step9')}
+          onKembali={() => setLangkah('step7')}
+        />
+      )
+    case 'step9':
+      return <Step9RefleksiHasil onSelesai={() => setLangkah('penutup')} onKembali={() => setLangkah('step8')} />
+    case 'penutup':
+      return (
+        <Screen>
+          <p style={{ margin: 0, lineHeight: 1.6 }}>
+            Nah, ini yang bakal kamu lakuin tiap kali ambil keputusan beneran. Bedanya, di keputusan asli biasanya
+            butuh waktu buat tau hasilnya, nggak secepat makan.
+          </p>
+          <Button variant="primary" onClick={onLanjut}>
+            Lanjut ke Gerbang Kode Akses
+          </Button>
+        </Screen>
+      )
   }
-
-  const skorKalibrasi = hitungSkorKalibrasi(draft.keyakinanAwal, draft.hasilPersen)
-  const kalimatReassurance = KALIMAT_REASSURANCE_KALIBRASI[skorKalibrasi]
-
-  return (
-    <StepScreen step={5} totalSteps={5} onKembali={kembali}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <p style={{ margin: 0 }}>Kamu bilang {draft.keyakinanAwal}% yakin ini bakal berhasil.</p>
-        <p style={{ margin: 0 }}>Hasilnya, {draft.hasilPersen}% sesuai harapanmu.</p>
-        <p style={{ margin: 0 }}>{KALIMAT_GAP_KALIBRASI[skorKalibrasi]}</p>
-        {kalimatReassurance && (
-          <p style={{ margin: 0, color: 'var(--color-ink-muted)' }}>{kalimatReassurance}</p>
-        )}
-      </div>
-
-      <p style={{ margin: 0, lineHeight: 1.6 }}>
-        Nah, ini yang bakal kamu lakuin tiap kali ambil keputusan beneran. Bedanya, di keputusan asli biasanya
-        butuh waktu buat tau hasilnya, nggak secepat makan siang.
-      </p>
-
-      <Button variant="primary" onClick={onLanjut}>
-        Lanjut
-      </Button>
-    </StepScreen>
-  )
 }
 
 export default OnboardingContoh

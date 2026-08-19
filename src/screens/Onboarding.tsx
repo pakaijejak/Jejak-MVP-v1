@@ -28,7 +28,7 @@ function Onboarding({ onCobaSekarang, onLewati }: OnboardingProps) {
             Coba Sekarang
           </Button>
           <p style={{ margin: '6px 0 0', fontSize: '0.8rem', color: 'var(--color-ink-muted)', textAlign: 'center' }}>
-            (sekitar 2 menit)
+            (sekitar 5 menit)
           </p>
         </div>
         <Button variant="secondary" onClick={onLewati}>

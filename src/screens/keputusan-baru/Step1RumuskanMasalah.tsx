@@ -12,6 +12,7 @@ interface Step1Props {
   onUpdate: (partial: Partial<KeputusanDraft>) => void
   onLanjut: () => void
   onKembali: () => void
+  modePraktik?: boolean
 }
 
 function cocokTetap(nilai: string | undefined): boolean {
@@ -19,7 +20,7 @@ function cocokTetap(nilai: string | undefined): boolean {
   return KATEGORI_TETAP.some((k) => k.toLowerCase() === nilai.toLowerCase())
 }
 
-function Step1RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali }: Step1Props) {
+function Step1RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali, modePraktik }: Step1Props) {
   const [kategoriCustom, setKategoriCustom] = useState(() => ambilKategoriCustomTerlihat())
   const [kategoriAkanDihapus, setKategoriAkanDihapus] = useState<string | null>(null)
   const [modeLainnya, setModeLainnya] = useState(() => {
@@ -53,7 +54,11 @@ function Step1RumuskanMasalah({ draft, onUpdate, onLanjut, onKembali }: Step1Pro
 
   function konfirmasiHapusKategori() {
     if (!kategoriAkanDihapus) return
-    sembunyikanKategori(kategoriAkanDihapus)
+    // Selama mode praktik (walkthrough latihan), jangan sentuh data kategori
+    // custom sungguhan milik user, cukup sembunyikan dari tampilan sesi ini saja.
+    if (!modePraktik) {
+      sembunyikanKategori(kategoriAkanDihapus)
+    }
     setKategoriCustom((prev) => prev.filter((k) => k.toLowerCase() !== kategoriAkanDihapus.toLowerCase()))
     setKategoriAkanDihapus(null)
   }
