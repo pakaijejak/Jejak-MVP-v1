@@ -7,6 +7,7 @@ import {
   ambilOnboardingSelesai,
   ambilOptInStatus,
   ambilPromptInstallDitutup,
+  ambilRefleksiGrafik,
   ambilSemuaKeputusan,
   ambilTerverifikasi,
   hapusSemuaData,
@@ -58,6 +59,7 @@ interface SpekVariatif {
   asumsiYangDianggapPasti?: string
   perspektifOrangLain?: string
   metaRefleksi?: string
+  risikoLevel?: 'Rendah' | 'Sedang' | 'Tinggi'
 }
 
 // Sebar kategori (Karier sengaja diberi 5 entri supaya insight pola di Step 8 ikut ketes,
@@ -66,6 +68,8 @@ interface SpekVariatif {
 // terakhir supaya grafik punya bentuk. Beberapa entri diisi field baru
 // (asumsiYangDianggapPasti, perspektifOrangLain, metaRefleksi, emosi custom dari Roda
 // Perasaan) supaya fitur kategori/emosi custom dan layar detail Riwayat & Pola ikut ketes.
+// Kelima entri Karier juga sengaja diberi risikoLevel 'Sedang' yang sama, supaya insight
+// risiko di Riwayat & Pola (butuh >=5 keputusan risiko sama) bisa langsung ketes.
 const SPEK_VARIATIF: SpekVariatif[] = [
   {
     kategori: 'Karier',
@@ -76,8 +80,16 @@ const SPEK_VARIATIF: SpekVariatif[] = [
     reviewedAtHariLalu: 14,
     asumsiYangDianggapPasti: 'Saya kira atasan pasti akan menolak.',
     perspektifOrangLain: 'Teman bilang saya terlalu takut ambil risiko.',
+    risikoLevel: 'Sedang',
   },
-  { kategori: 'Karier', keyakinanAwal: 90, hasilPersen: 10, createdAtHariLalu: 18, reviewedAtHariLalu: 12 },
+  {
+    kategori: 'Karier',
+    keyakinanAwal: 90,
+    hasilPersen: 10,
+    createdAtHariLalu: 18,
+    reviewedAtHariLalu: 12,
+    risikoLevel: 'Sedang',
+  },
   {
     kategori: 'Karier',
     emosi: 'Frustasi',
@@ -86,9 +98,24 @@ const SPEK_VARIATIF: SpekVariatif[] = [
     createdAtHariLalu: 16,
     reviewedAtHariLalu: 10,
     metaRefleksi: 'Paling susah jawab soal perasaan sekarang.',
+    risikoLevel: 'Sedang',
   },
-  { kategori: 'Karier', keyakinanAwal: 60, hasilPersen: 55, createdAtHariLalu: 14, reviewedAtHariLalu: 8 },
-  { kategori: 'Karier', keyakinanAwal: 80, hasilPersen: 15, createdAtHariLalu: 12, reviewedAtHariLalu: 6 },
+  {
+    kategori: 'Karier',
+    keyakinanAwal: 60,
+    hasilPersen: 55,
+    createdAtHariLalu: 14,
+    reviewedAtHariLalu: 8,
+    risikoLevel: 'Sedang',
+  },
+  {
+    kategori: 'Karier',
+    keyakinanAwal: 80,
+    hasilPersen: 15,
+    createdAtHariLalu: 12,
+    reviewedAtHariLalu: 6,
+    risikoLevel: 'Sedang',
+  },
   {
     kategori: 'Investasi',
     keyakinanAwal: 70,
@@ -126,7 +153,11 @@ function buatBanyakDataContohVariatif(): Keputusan[] {
       asumsiYangDianggapPasti: spek.asumsiYangDianggapPasti,
       sudahCekPandanganBerbeda: true,
       opsi: [
-        { teks: `Opsi A variatif ${index + 1}`, skenarioTerburuk: 'Skenario buruk A' },
+        {
+          teks: `Opsi A variatif ${index + 1}`,
+          skenarioTerburuk: 'Skenario buruk A',
+          risiko: spek.risikoLevel ? { ada: true, level: spek.risikoLevel } : undefined,
+        },
         { teks: `Opsi B variatif ${index + 1}`, skenarioTerburuk: 'Skenario buruk B' },
       ],
       perspektifOrangLain: spek.perspektifOrangLain,
@@ -163,9 +194,11 @@ function DebugPage() {
   const [optInStatus, setOptInStatusState] = useState(() => ambilOptInStatus())
   const [terverifikasi, setTerverifikasiState] = useState(() => ambilTerverifikasi())
   const [promptInstallDitutup, setPromptInstallDitutupState] = useState(() => ambilPromptInstallDitutup())
+  const [refleksiGrafik, setRefleksiGrafik] = useState(() => ambilRefleksiGrafik())
 
   function refresh() {
     setSemua(ambilSemuaKeputusan())
+    setRefleksiGrafik(ambilRefleksiGrafik())
   }
 
   function handleTambahDataContoh() {
@@ -261,6 +294,19 @@ function DebugPage() {
           {semua.map((k) => (
             <li key={k.id}>
               <pre>{JSON.stringify(k, null, 2)}</pre>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <h2>Refleksi Grafik ({refleksiGrafik.length})</h2>
+      {refleksiGrafik.length === 0 ? (
+        <p>Belum ada data.</p>
+      ) : (
+        <ul>
+          {refleksiGrafik.map((r) => (
+            <li key={r.id}>
+              <pre>{JSON.stringify(r, null, 2)}</pre>
             </li>
           ))}
         </ul>

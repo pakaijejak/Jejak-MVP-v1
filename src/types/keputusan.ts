@@ -54,3 +54,11 @@ export interface Keputusan {
 }
 
 export type OptInStatus = 'belum_ditanya' | 'ya' | 'nanti_aja';
+
+// Refleksi bebas user soal pola yang mereka lihat di grafik kalibrasi (Riwayat & Pola).
+// Disimpan sebagai daftar bertanggal, bukan 1 nilai yang ketimpa.
+export interface RefleksiGrafik {
+  id: string;
+  teks: string; // lanjutan kalimat setelah awalan tetap "Ternyata"
+  createdAt: string; // ISO date string
+}

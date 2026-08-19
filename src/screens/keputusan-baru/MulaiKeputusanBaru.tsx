@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { resolveKategori, tambahKeputusan } from '../../lib/storage'
+import SelfAssessmentProses from './SelfAssessmentProses'
 import Step1RumuskanMasalah from './Step1RumuskanMasalah'
 import Step2JedaEmosi from './Step2JedaEmosi'
 import Step3CekFakta from './Step3CekFakta'
@@ -93,6 +94,8 @@ function MulaiKeputusanBaru({ onSelesai, onBatal }: MulaiKeputusanBaruProps) {
         />
       )
     case 6:
+      return <SelfAssessmentProses draft={draft} onLanjut={() => setCurrentStep(7)} onKembali={kembali} />
+    case 7:
       return (
         <Step6JadwalkanReview
           masalah={draft.masalah}

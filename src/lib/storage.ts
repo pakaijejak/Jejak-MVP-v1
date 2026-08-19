@@ -1,4 +1,4 @@
-import type { Keputusan, OptInStatus } from '../types/keputusan';
+import type { Keputusan, OptInStatus, RefleksiGrafik } from '../types/keputusan';
 
 const KEPUTUSAN_KEY = 'runut:keputusan';
 const ONBOARDING_SELESAI_KEY = 'runut:onboardingSelesai';
@@ -8,6 +8,7 @@ const NAMA_SAPAAN_KEY = 'runut:namaSapaan';
 const KATEGORI_TERSEMBUNYI_KEY = 'runut:kategoriTersembunyi';
 const TERVERIFIKASI_KEY = 'runut:terverifikasi';
 const PROMPT_INSTALL_DITUTUP_KEY = 'runut:promptInstallDitutup';
+const REFLEKSI_GRAFIK_KEY = 'runut:refleksiGrafik';
 
 export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
 const KATA_LAINNYA = 'lainnya';
@@ -179,6 +180,29 @@ export function setPromptInstallDitutup(status: boolean): void {
   localStorage.setItem(PROMPT_INSTALL_DITUTUP_KEY, String(status));
 }
 
+export function ambilRefleksiGrafik(): RefleksiGrafik[] {
+  const raw = localStorage.getItem(REFLEKSI_GRAFIK_KEY);
+  if (!raw) return [];
+  return JSON.parse(raw) as RefleksiGrafik[];
+}
+
+export function tambahRefleksiGrafik(teks: string): RefleksiGrafik {
+  const entri: RefleksiGrafik = {
+    id: crypto.randomUUID(),
+    teks: teks.trim(),
+    createdAt: new Date().toISOString(),
+  };
+  const semua = ambilRefleksiGrafik();
+  semua.push(entri);
+  localStorage.setItem(REFLEKSI_GRAFIK_KEY, JSON.stringify(semua));
+  return entri;
+}
+
+export function hapusRefleksiGrafik(id: string): void {
+  const semua = ambilRefleksiGrafik().filter((r) => r.id !== id);
+  localStorage.setItem(REFLEKSI_GRAFIK_KEY, JSON.stringify(semua));
+}
+
 export function hapusSemuaData(): void {
   localStorage.removeItem(KEPUTUSAN_KEY);
   localStorage.removeItem(ONBOARDING_SELESAI_KEY);
@@ -188,4 +212,5 @@ export function hapusSemuaData(): void {
   localStorage.removeItem(KATEGORI_TERSEMBUNYI_KEY);
   localStorage.removeItem(TERVERIFIKASI_KEY);
   localStorage.removeItem(PROMPT_INSTALL_DITUTUP_KEY);
+  localStorage.removeItem(REFLEKSI_GRAFIK_KEY);
 }

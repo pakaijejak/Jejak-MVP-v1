@@ -16,8 +16,10 @@ import type { Keputusan } from '../../types/keputusan'
 import CadangkanData from './CadangkanData'
 import DetailKeputusan from './DetailKeputusan'
 import GrafikKalibrasi from './GrafikKalibrasi'
+import InsightPola from './InsightPola'
 import KartuRiwayat from './KartuRiwayat'
 import PulihkanData from './PulihkanData'
+import RefleksiGrafik from './RefleksiGrafik'
 
 type FilterKategori = 'Semua' | string
 type SubLayar = 'daftar' | 'cadangkan' | 'pulihkan'
@@ -256,7 +258,13 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
             {tampilkanGrafik ? '👁 Sembunyikan grafik' : '👁 Tampilkan grafik'}
           </button>
         </div>
-        {tampilkanGrafik && <GrafikKalibrasi data={terfilter} />}
+        {tampilkanGrafik && (
+          <>
+            <GrafikKalibrasi data={terfilter} />
+            <RefleksiGrafik />
+          </>
+        )}
+        <InsightPola daftar={terfilter} labelKategori={filter} />
 
         <div style={{ marginTop: 16 }}>
           <p style={{ margin: '0 0 12px', fontWeight: 600 }}>Daftar keputusan</p>

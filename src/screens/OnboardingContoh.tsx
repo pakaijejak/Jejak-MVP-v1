@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Button from '../components/Button'
 import Screen from '../components/Screen'
+import SelfAssessmentProses from './keputusan-baru/SelfAssessmentProses'
 import Step1RumuskanMasalah from './keputusan-baru/Step1RumuskanMasalah'
 import Step2JedaEmosi from './keputusan-baru/Step2JedaEmosi'
 import Step3CekFakta from './keputusan-baru/Step3CekFakta'
@@ -34,7 +35,18 @@ interface DraftHasilLatihan {
   catatanHasil: string
 }
 
-type Langkah = 'step1' | 'step2' | 'step3' | 'step4' | 'step5' | 'transisi' | 'step7' | 'step8' | 'step9' | 'penutup'
+type Langkah =
+  | 'step1'
+  | 'step2'
+  | 'step3'
+  | 'step4'
+  | 'step5'
+  | 'penilaian'
+  | 'transisi'
+  | 'step7'
+  | 'step8'
+  | 'step9'
+  | 'penutup'
 
 interface OnboardingContohProps {
   onLanjut: () => void
@@ -73,7 +85,7 @@ function OnboardingContoh({ onLanjut, onBatal }: OnboardingContohProps) {
       tanggalTargetReview: new Date().toISOString(),
       status: 'menunggu_direview',
     })
-    setLangkah('transisi')
+    setLangkah('penilaian')
   }
 
   switch (langkah) {
@@ -122,6 +134,10 @@ function OnboardingContoh({ onLanjut, onBatal }: OnboardingContohProps) {
           onLanjut={selesaikanStep5}
           onKembali={() => setLangkah('step4')}
         />
+      )
+    case 'penilaian':
+      return (
+        <SelfAssessmentProses draft={draft} onLanjut={() => setLangkah('transisi')} onKembali={() => setLangkah('step5')} />
       )
     case 'transisi':
       return (
