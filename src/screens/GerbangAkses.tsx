@@ -16,21 +16,26 @@ interface GerbangAksesProps {
 
 function GerbangAkses({ onTerverifikasi, onLihatContoh }: GerbangAksesProps) {
   const [kode, setKode] = useState('')
-  const [error, setError] = useState(false)
+  const [pesanError, setPesanError] = useState('')
   const [memeriksa, setMemeriksa] = useState(false)
   const [standalone] = useState(() => apakahModeStandalone())
 
   async function handleBuka() {
     setMemeriksa(true)
-    const cocok = await cocokkanKodeAkses(kode)
+    const hasil = await cocokkanKodeAkses(kode)
     setMemeriksa(false)
 
-    if (cocok) {
+    if (hasil === 'diterima') {
       onTerverifikasi()
       return
     }
 
-    setError(true)
+    if (hasil === 'kadaluarsa') {
+      setPesanError('Kode ini sudah tidak berlaku lagi')
+      return
+    }
+
+    setPesanError('Kode belum sesuai, coba cek lagi.')
   }
 
   return (
@@ -47,16 +52,14 @@ function GerbangAkses({ onTerverifikasi, onLihatContoh }: GerbangAksesProps) {
           value={kode}
           onChange={(e) => {
             setKode(e.target.value)
-            setError(false)
+            setPesanError('')
           }}
           placeholder="Kode akses"
           style={textInputStyle}
           autoFocus
         />
-        {error && (
-          <p style={{ margin: '8px 0 0', color: 'var(--color-accent)', fontSize: '0.9rem' }}>
-            Kode belum sesuai, coba cek lagi.
-          </p>
+        {pesanError && (
+          <p style={{ margin: '8px 0 0', color: 'var(--color-accent)', fontSize: '0.9rem' }}>{pesanError}</p>
         )}
       </div>
 
