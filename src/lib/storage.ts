@@ -9,6 +9,10 @@ const KATEGORI_TERSEMBUNYI_KEY = 'runut:kategoriTersembunyi';
 const TERVERIFIKASI_KEY = 'runut:terverifikasi';
 const PROMPT_INSTALL_DITUTUP_KEY = 'runut:promptInstallDitutup';
 const REFLEKSI_GRAFIK_KEY = 'runut:refleksiGrafik';
+const KODE_REFERRAL_SAYA_KEY = 'runut:kodeReferralSaya';
+const KODE_REFERRAL_PENGAJU_KEY = 'runut:kodeReferralPengaju';
+const KONVERSI_SUDAH_DIKIRIM_KEY = 'runut:konversiSudahDikirim';
+const NAMA_TAMPILAN_REFERRAL_KEY = 'runut:namaTampilanReferral';
 
 export const KATEGORI_TETAP = ['Karier', 'Uang', 'Relasi', 'Kesehatan'];
 const KATA_LAINNYA = 'lainnya';
@@ -213,4 +217,63 @@ export function hapusSemuaData(): void {
   localStorage.removeItem(TERVERIFIKASI_KEY);
   localStorage.removeItem(PROMPT_INSTALL_DITUTUP_KEY);
   localStorage.removeItem(REFLEKSI_GRAFIK_KEY);
+  localStorage.removeItem(KODE_REFERRAL_SAYA_KEY);
+  localStorage.removeItem(KODE_REFERRAL_PENGAJU_KEY);
+  localStorage.removeItem(KONVERSI_SUDAH_DIKIRIM_KEY);
+  localStorage.removeItem(NAMA_TAMPILAN_REFERRAL_KEY);
+}
+
+const KARAKTER_KODE_REFERRAL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+function generateKodeReferral(): string {
+  let acak = '';
+  for (let i = 0; i < 6; i++) {
+    acak += KARAKTER_KODE_REFERRAL[Math.floor(Math.random() * KARAKTER_KODE_REFERRAL.length)];
+  }
+  return `RT-${acak}`;
+}
+
+// Generate sekali saja, dipakai terus setelahnya (bukan token rahasia, jadi
+// Math.random cukup -- risiko tabrakan antar 2 user sangat kecil di skala MVP).
+export function ambilKodeReferralSaya(): string {
+  const ada = localStorage.getItem(KODE_REFERRAL_SAYA_KEY);
+  if (ada) return ada;
+  const baru = generateKodeReferral();
+  localStorage.setItem(KODE_REFERRAL_SAYA_KEY, baru);
+  return baru;
+}
+
+export function ambilKodeReferralPengaju(): string | null {
+  return localStorage.getItem(KODE_REFERRAL_PENGAJU_KEY);
+}
+
+// Cuma simpan kalau user belum pernah verifikasi kode akses DAN belum ada
+// kodeReferralPengaju tersimpan sebelumnya -- supaya orang yang buka link
+// referral tidak menimpa nilai yang sudah ada, dan supaya user yang sudah
+// terverifikasi tidak ikut tercatat sebagai "diajak".
+export function setKodeReferralPengajuJikaBelumAda(kode: string): void {
+  if (ambilTerverifikasi()) return;
+  if (ambilKodeReferralPengaju()) return;
+  localStorage.setItem(KODE_REFERRAL_PENGAJU_KEY, kode);
+}
+
+export function ambilKonversiSudahDikirim(): boolean {
+  return localStorage.getItem(KONVERSI_SUDAH_DIKIRIM_KEY) === 'true';
+}
+
+export function setKonversiSudahDikirim(status: boolean): void {
+  localStorage.setItem(KONVERSI_SUDAH_DIKIRIM_KEY, String(status));
+}
+
+export function ambilNamaTampilanReferral(): string {
+  return localStorage.getItem(NAMA_TAMPILAN_REFERRAL_KEY) ?? '';
+}
+
+export function setNamaTampilanReferral(nama: string): void {
+  const bersih = nama.trim();
+  if (bersih) {
+    localStorage.setItem(NAMA_TAMPILAN_REFERRAL_KEY, bersih);
+  } else {
+    localStorage.removeItem(NAMA_TAMPILAN_REFERRAL_KEY);
+  }
 }

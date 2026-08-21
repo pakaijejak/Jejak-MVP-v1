@@ -19,9 +19,16 @@ interface BerandaProps {
   onRiwayatPola: () => void
   onLihatCekHasil: () => void
   onBantuanMasukan: () => void
+  onAjakTeman: () => void
 }
 
-function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantuanMasukan }: BerandaProps) {
+function Beranda({
+  onMulaiKeputusanBaru,
+  onRiwayatPola,
+  onLihatCekHasil,
+  onBantuanMasukan,
+  onAjakTeman,
+}: BerandaProps) {
   const [pending] = useState(() => ambilKeputusanPending())
   const [namaSapaan, setNamaSapaanState] = useState(() => ambilNamaSapaan())
   const [tampilkanPromptInstall, setTampilkanPromptInstall] = useState(
@@ -136,6 +143,24 @@ function Beranda({ onMulaiKeputusanBaru, onRiwayatPola, onLihatCekHasil, onBantu
           Riwayat &amp; Pola
         </Button>
       </div>
+
+      <button
+        type="button"
+        onClick={onAjakTeman}
+        style={{
+          background: 'none',
+          border: 'none',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          color: 'var(--color-accent)',
+          cursor: 'pointer',
+          padding: 0,
+          fontFamily: 'inherit',
+          textAlign: 'left',
+        }}
+      >
+        🎁 Ajak Teman, Dapat Hadiah
+      </button>
 
       <button
         type="button"

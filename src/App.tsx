@@ -1,6 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DebugPage from './debug/DebugPage'
-import { ambilTerverifikasi, setOnboardingSelesai, setTerverifikasi } from './lib/storage'
+import {
+  ambilTerverifikasi,
+  setKodeReferralPengajuJikaBelumAda,
+  setOnboardingSelesai,
+  setTerverifikasi,
+} from './lib/storage'
+import AjakTeman from './screens/AjakTeman'
 import BantuanMasukan from './screens/BantuanMasukan'
 import Beranda from './screens/Beranda'
 import CekHasilFlow from './screens/cek-hasil/CekHasilFlow'
@@ -19,6 +25,7 @@ type Layar =
   | 'lihat-cek-hasil'
   | 'cek-hasil-detail'
   | 'bantuan-masukan'
+  | 'ajak-teman'
 
 type AsalCekHasil = 'lihat-cek-hasil' | 'riwayat-pola'
 
@@ -41,10 +48,13 @@ function MainApp() {
           onRiwayatPola={() => setLayar('riwayat-pola')}
           onLihatCekHasil={() => setLayar('lihat-cek-hasil')}
           onBantuanMasukan={() => setLayar('bantuan-masukan')}
+          onAjakTeman={() => setLayar('ajak-teman')}
         />
       )
     case 'bantuan-masukan':
       return <BantuanMasukan onKembali={() => setLayar('beranda')} />
+    case 'ajak-teman':
+      return <AjakTeman onKembali={() => setLayar('beranda')} />
     case 'mulai-keputusan':
       return (
         <MulaiKeputusanBaru
@@ -130,6 +140,13 @@ function AksesGate() {
 }
 
 function App() {
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get('ref')
+    if (ref) {
+      setKodeReferralPengajuJikaBelumAda(ref)
+    }
+  }, [])
+
   if (window.location.pathname === '/debug') {
     return <DebugPage />
   }

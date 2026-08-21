@@ -5,6 +5,12 @@ import PanduanInstalasi from '../components/PanduanInstalasi'
 import Screen from '../components/Screen'
 import { cocokkanKodeAkses } from '../lib/aksesGerbang'
 import { apakahModeStandalone } from '../lib/pwa'
+import { kirimKonversi } from '../lib/referralApi'
+import {
+  ambilKodeReferralPengaju,
+  ambilKonversiSudahDikirim,
+  setKonversiSudahDikirim,
+} from '../lib/storage'
 import { textInputStyle } from '../styles/formStyles'
 
 const LINK_BELI_LYNK = 'https://lynk.id/runtut'
@@ -26,6 +32,16 @@ function GerbangAkses({ onTerverifikasi, onLihatContoh }: GerbangAksesProps) {
     setMemeriksa(false)
 
     if (hasil === 'diterima') {
+      // Ini cuma "numpang lewat" di momen verifikasi berhasil, TIDAK PERNAH
+      // di-await -- kalau Worker gagal/tidak bisa dihubungi, verifikasi kode
+      // akses tetap harus berhasil seperti biasa (onTerverifikasi() di bawah
+      // selalu jalan, tidak bergantung sama sekali pada hasil fetch ini).
+      const kodePengaju = ambilKodeReferralPengaju()
+      if (kodePengaju && !ambilKonversiSudahDikirim()) {
+        setKonversiSudahDikirim(true)
+        void kirimKonversi(kodePengaju)
+      }
+
       onTerverifikasi()
       return
     }
