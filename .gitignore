@@ -25,6 +25,10 @@ dist-ssr
 
 # Env
 .env
+.dev.vars
+
+# Wrangler local state
+.wrangler/
 
 # Claude Code local overrides
 .claude/settings.local.json

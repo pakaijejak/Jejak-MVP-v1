@@ -1,8 +1,20 @@
 {
   "name": "jejak-mvp-v1",
   "compatibility_date": "2026-08-06",
+  "main": "worker/index.ts",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  }
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "kv_namespaces": [
+    // GANTI "id" di bawah dengan ID asli setelah menjalankan:
+    //   npx wrangler kv namespace create REFERRAL_KV
+    // (dan untuk preview/testing lokal lewat --remote:
+    //   npx wrangler kv namespace create REFERRAL_KV --preview )
+    // Untuk `wrangler dev` lokal (tanpa --remote), id di bawah tidak perlu
+    // valid di akun Cloudflare sungguhan, Miniflare simulasi KV secara lokal.
+    { "binding": "REFERRAL_KV", "id": "GANTI_DENGAN_ID_ASLI_SETELAH_WRANGLER_KV_NAMESPACE_CREATE" }
+  ]
 }
