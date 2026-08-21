@@ -13,6 +13,7 @@ import {
   setTampilkanGrafikPola,
 } from '../../lib/storage'
 import type { Keputusan } from '../../types/keputusan'
+import BagikanPencapaian from './BagikanPencapaian'
 import CadangkanData from './CadangkanData'
 import DetailKeputusan from './DetailKeputusan'
 import GrafikKalibrasi from './GrafikKalibrasi'
@@ -22,7 +23,7 @@ import PulihkanData from './PulihkanData'
 import RefleksiGrafik from './RefleksiGrafik'
 
 type FilterKategori = 'Semua' | string
-type SubLayar = 'daftar' | 'cadangkan' | 'pulihkan'
+type SubLayar = 'daftar' | 'cadangkan' | 'pulihkan' | 'bagikan-pencapaian'
 
 interface RiwayatPolaProps {
   onKembali: () => void
@@ -39,6 +40,8 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
   const [menuTerbuka, setMenuTerbuka] = useState(false)
   const [kartuDipilih, setKartuDipilih] = useState<Keputusan | null>(null)
   const [konfirmasiHapusTerbuka, setKonfirmasiHapusTerbuka] = useState(false)
+
+  const adaSudahDicek = useMemo(() => semua.some((k) => k.status === 'sudah_direview'), [semua])
 
   const terfilter = useMemo(() => {
     const hasil =
@@ -97,6 +100,10 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
 
   if (subLayar === 'pulihkan') {
     return <PulihkanData onKembali={() => setSubLayar('daftar')} onSelesai={onKembali} />
+  }
+
+  if (subLayar === 'bagikan-pencapaian') {
+    return <BagikanPencapaian onKembali={() => setSubLayar('daftar')} />
   }
 
   return (
@@ -190,6 +197,12 @@ function RiwayatPola({ onKembali, onPilihPending }: RiwayatPolaProps) {
           sekarang biar aman.
         </p>
       </div>
+
+      {adaSudahDicek && (
+        <Button variant="secondary" onClick={() => setSubLayar('bagikan-pencapaian')}>
+          🎉 Bagikan Pencapaian
+        </Button>
+      )}
 
       <ChipRow>
         <Chip label="Semua" selected={filter === 'Semua'} onClick={() => setFilter('Semua')} />

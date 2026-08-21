@@ -207,6 +207,16 @@ export function hapusRefleksiGrafik(id: string): void {
   localStorage.setItem(REFLEKSI_GRAFIK_KEY, JSON.stringify(semua));
 }
 
+export function ambilRefleksiGrafikTerbaru(): RefleksiGrafik | null {
+  const semua = ambilRefleksiGrafik();
+  if (semua.length === 0) return null;
+  return [...semua].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+}
+
+export function hitungKeputusanSudahDicek(): number {
+  return ambilSemuaKeputusan().filter((k) => k.status === 'sudah_direview').length;
+}
+
 export function hapusSemuaData(): void {
   localStorage.removeItem(KEPUTUSAN_KEY);
   localStorage.removeItem(ONBOARDING_SELESAI_KEY);
